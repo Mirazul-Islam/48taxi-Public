@@ -1,0 +1,40 @@
+@import '@fontsource-variable/inter/wght.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; color-scheme: dark; }
+  body { @apply bg-paper text-ink antialiased; font-feature-settings: 'cv11', 'ss01'; }
+  h1, h2, h3, h4 { @apply tracking-tight text-white; text-wrap: balance; }
+  a { @apply text-brand-700 underline decoration-1 underline-offset-2; }
+  a:hover { @apply text-brand-800; }
+  strong, b { @apply text-white; }
+  :focus-visible { @apply outline outline-2 outline-offset-2 outline-brand-700; }
+  ::selection { @apply bg-brand-100 text-white; }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-site px-4 sm:px-6; }
+  .btn { @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-[15px] font-semibold no-underline transition-colors; }
+  .btn-primary { @apply btn bg-brand-700 text-onaccent hover:bg-brand-800 hover:text-onaccent; }
+  .btn-dark { @apply btn bg-ink text-paper hover:bg-white hover:text-paper; }
+  .btn-ghost { @apply btn border border-sand/40 bg-transparent text-ink hover:border-brand-700 hover:text-brand-700; }
+  .btn-light { @apply btn bg-ink text-paper hover:bg-white hover:text-paper; }
+  .eyebrow { @apply text-xs font-bold uppercase tracking-[0.14em] text-brand-700; }
+  .h-section { @apply text-2xl font-bold sm:text-3xl; }
+  .lede { @apply text-lg text-ink-2; }
+  .card { @apply rounded-xl border border-line bg-card p-5; }
+  .prose-legal h2 { @apply mt-8 text-xl font-semibold; }
+  .prose-legal h3, .prose-legal h4 { @apply mt-6 text-lg font-semibold; }
+  .prose-legal p { @apply mt-3 text-ink-2; }
+  .prose-legal ul { @apply mt-3 list-disc space-y-1.5 pl-6 text-ink-2; }
+  .table { @apply w-full border-collapse text-left text-[15px]; }
+  .table th { @apply border-b border-line bg-band px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink-3; }
+  .table td { @apply border-b border-line px-3 py-2.5 align-top; }
+  .field { @apply block w-full rounded-lg border border-[#6A574E] bg-[#1A1311] px-3 py-2.5 text-[16px] text-ink placeholder:text-[#9C8E83] focus:border-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-700/30; }
+  .label { @apply mb-1.5 block text-sm font-medium text-ink; }
+  .field option { @apply bg-card text-ink; }
+  .hint { @apply mt-1 text-xs text-ink-3; }
+  .chip { @apply inline-flex items-center rounded-full bg-chip px-2.5 py-0.5 text-xs font-medium text-ink-2; }
+}

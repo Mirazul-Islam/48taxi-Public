@@ -1,0 +1,840 @@
+{
+ "longDistanceNS": [
+  {
+   "place": "Acadiaville",
+   "fare": 438.0
+  },
+  {
+   "place": "Amherst",
+   "fare": 293.0
+  },
+  {
+   "place": "Aldershot",
+   "fare": 196.0
+  },
+  {
+   "place": "Annapolis Royal",
+   "fare": 352.0
+  },
+  {
+   "place": "Antigonish",
+   "fare": 320.0
+  },
+  {
+   "place": "Arichat",
+   "fare": 499.0
+  },
+  {
+   "place": "Aylesford",
+   "fare": 239.0
+  },
+  {
+   "place": "Baddeck",
+   "fare": 533.0
+  },
+  {
+   "place": "Barrington",
+   "fare": 447.0
+  },
+  {
+   "place": "Bass River",
+   "fare": 192.0
+  },
+  {
+   "place": "Berwick",
+   "fare": 226.0
+  },
+  {
+   "place": "Bible Hill",
+   "fare": 123.0
+  },
+  {
+   "place": "Blandford",
+   "fare": 161.0
+  },
+  {
+   "place": "Bridgetown",
+   "fare": 313.0
+  },
+  {
+   "place": "Bridgewater",
+   "fare": 211.0
+  },
+  {
+   "place": "Canso",
+   "fare": 492.0
+  },
+  {
+   "place": "Canso Causeway",
+   "fare": 440.0
+  },
+  {
+   "place": "Cape North",
+   "fare": 719.0
+  },
+  {
+   "place": "Caribou (Pei Ferry)",
+   "fare": 249.0
+  },
+  {
+   "place": "Chester (East)",
+   "fare": 140.0
+  },
+  {
+   "place": "Chester",
+   "fare": 144.0
+  },
+  {
+   "place": "Chester (Basin)",
+   "fare": 156.0
+  },
+  {
+   "place": "Cheticamp",
+   "fare": 602.0
+  },
+  {
+   "place": "Church Point",
+   "fare": 460.0
+  },
+  {
+   "place": "Clarks Harbour",
+   "fare": 462.0
+  },
+  {
+   "place": "Coldbrook",
+   "fare": 204.0
+  },
+  {
+   "place": "Cornwallis",
+   "fare": 381.0
+  },
+  {
+   "place": "Country Harbour",
+   "fare": 416.0
+  },
+  {
+   "place": "Debert",
+   "fare": 144.0
+  },
+  {
+   "place": "Deep Brook",
+   "fare": 382.0
+  },
+  {
+   "place": "Digby",
+   "fare": 400.0
+  },
+  {
+   "place": "Ecum Secum",
+   "fare": 306.0
+  },
+  {
+   "place": "Falmouth",
+   "fare": 133.0
+  },
+  {
+   "place": "Fox Harbour",
+   "fare": 251.0
+  },
+  {
+   "place": "Glace Bay",
+   "fare": 645.0
+  },
+  {
+   "place": "Glenholme",
+   "fare": 153.0
+  },
+  {
+   "place": "Goldboro",
+   "fare": 418.0
+  },
+  {
+   "place": "Grand Pre",
+   "fare": 161.0
+  },
+  {
+   "place": "Greenwood",
+   "fare": 259.0
+  },
+  {
+   "place": "Guysborough",
+   "fare": 442.0
+  },
+  {
+   "place": "Hantsport",
+   "fare": 147.0
+  },
+  {
+   "place": "Ingonish",
+   "fare": 670.0
+  },
+  {
+   "place": "Inverness",
+   "fare": 519.0
+  },
+  {
+   "place": "Kentville",
+   "fare": 195.0
+  },
+  {
+   "place": "Kejimkujic",
+   "fare": 328.0
+  },
+  {
+   "place": "Kingston",
+   "fare": 262.0
+  },
+  {
+   "place": "La Have",
+   "fare": 239.0
+  },
+  {
+   "place": "Lake Charlotte (HRM)",
+   "fare": 142.0
+  },
+  {
+   "place": "Liverpool",
+   "fare": 275.0
+  },
+  {
+   "place": "Lockport",
+   "fare": 374.0
+  },
+  {
+   "place": "Louisbourg",
+   "fare": 670.0
+  },
+  {
+   "place": "Lunenburg",
+   "fare": 200.0
+  },
+  {
+   "place": "Mahone Bay",
+   "fare": 180.0
+  },
+  {
+   "place": "Margaree (Forks)",
+   "fare": 548.0
+  },
+  {
+   "place": "Meteghan",
+   "fare": 487.0
+  },
+  {
+   "place": "Middleton",
+   "fare": 257.0
+  },
+  {
+   "place": "Monastery",
+   "fare": 365.0
+  },
+  {
+   "place": "Mulgrave",
+   "fare": 407.0
+  },
+  {
+   "place": "New Germany",
+   "fare": 241.0
+  },
+  {
+   "place": "New Glasgow",
+   "fare": 228.0
+  },
+  {
+   "place": "New Minas",
+   "fare": 187.0
+  },
+  {
+   "place": "New Ross",
+   "fare": 192.0
+  },
+  {
+   "place": "New Waterford",
+   "fare": 638.0
+  },
+  {
+   "place": "North Sydney",
+   "fare": 618.0
+  },
+  {
+   "place": "Oak Island",
+   "fare": 161.0
+  },
+  {
+   "place": "Oxford",
+   "fare": 239.0
+  },
+  {
+   "place": "Parrasboro",
+   "fare": 268.0
+  },
+  {
+   "place": "Port Dufferin",
+   "fare": 263.0
+  },
+  {
+   "place": "Pictou",
+   "fare": 238.0
+  },
+  {
+   "place": "Port Hastings",
+   "fare": 400.0
+  },
+  {
+   "place": "Port Hawkesbury",
+   "fare": 407.0
+  },
+  {
+   "place": "Port Hood",
+   "fare": 470.0
+  },
+  {
+   "place": "Port Maitland",
+   "fare": 522.0
+  },
+  {
+   "place": "Pubnico",
+   "fare": 478.0
+  },
+  {
+   "place": "Pugwash",
+   "fare": 280.0
+  },
+  {
+   "place": "Riverport",
+   "fare": 217.0
+  },
+  {
+   "place": "Sheet Harbour (HRM)",
+   "fare": 241.0
+  },
+  {
+   "place": "Shelburne",
+   "fare": 382.0
+  },
+  {
+   "place": "Sherbrooke",
+   "fare": 326.0
+  },
+  {
+   "place": "Ship Harbour (HRM",
+   "fare": 187.0
+  },
+  {
+   "place": "Springhill",
+   "fare": 263.0
+  },
+  {
+   "place": "Spry Bay",
+   "fare": 214.0
+  },
+  {
+   "place": "St. Peters",
+   "fare": 480.0
+  },
+  {
+   "place": "Stellarton",
+   "fare": 224.0
+  },
+  {
+   "place": "Sydney",
+   "fare": 621.0
+  },
+  {
+   "place": "Sydney Mines",
+   "fare": 616.0
+  },
+  {
+   "place": "Tangier",
+   "fare": 195.0
+  },
+  {
+   "place": "Tatamagouche",
+   "fare": 203.0
+  },
+  {
+   "place": "Tidnish",
+   "fare": 337.0
+  },
+  {
+   "place": "Trenton",
+   "fare": 230.0
+  },
+  {
+   "place": "Tupperville",
+   "fare": 328.0
+  },
+  {
+   "place": "Waterville",
+   "fare": 214.0
+  },
+  {
+   "place": "Wentworth",
+   "fare": 200.0
+  },
+  {
+   "place": "Westville",
+   "fare": 218.0
+  },
+  {
+   "place": "Weymouth",
+   "fare": 443.0
+  },
+  {
+   "place": "White Point (Beach Resort)",
+   "fare": 299.0
+  },
+  {
+   "place": "Whycocmagh",
+   "fare": 475.0
+  },
+  {
+   "place": "Wolfville",
+   "fare": 169.0
+  },
+  {
+   "place": "Yarmouth",
+   "fare": 562.0
+  }
+ ],
+ "longDistanceNBPEI": [
+  {
+   "place": "Aulac, N.B",
+   "fare": 308.0
+  },
+  {
+   "place": "Bathurst",
+   "fare": 730.0
+  },
+  {
+   "place": "Bordon, P.E.I. (plus toll)",
+   "fare": 431.0
+  },
+  {
+   "place": "Campbellton, N.B",
+   "fare": 896.0
+  },
+  {
+   "place": "Cape Tormentine, N.B",
+   "fare": 395.0
+  },
+  {
+   "place": "Charlottetown, P.E.I. (plus toll)",
+   "fare": 497.0
+  },
+  {
+   "place": "Chatham, N.B.",
+   "fare": 598.0
+  },
+  {
+   "place": "Edmunston, N.B.",
+   "fare": 1123.0
+  },
+  {
+   "place": "Fredericton, N.B.",
+   "fare": 717.0
+  },
+  {
+   "place": "Grand Falls, N.B.",
+   "fare": 1076.0
+  },
+  {
+   "place": "Moncton, N.B.",
+   "fare": 397.0
+  },
+  {
+   "place": "Sackville, N.B.",
+   "fare": 321.0
+  },
+  {
+   "place": "Saint John, N.B.",
+   "fare": 626.0
+  },
+  {
+   "place": "Shediac, N.B.",
+   "fare": 405.0
+  },
+  {
+   "place": "Shippegan, N.B.",
+   "fare": 740.0
+  },
+  {
+   "place": "St. Stephen, N.B.",
+   "fare": 896.0
+  },
+  {
+   "place": "Summerside, P.E.I. (plus toll)",
+   "fare": 450.0
+  },
+  {
+   "place": "Sussex, N.B.",
+   "fare": 574.0
+  },
+  {
+   "place": "Woodstock, N.B.",
+   "fare": 884.0
+  }
+ ],
+ "ratesToAirportZones": [
+  {
+   "area": "Halifax",
+   "details": "Peninsula commencing beyond Kearney Lake Rd off Bedford Hwy to 102, including Bayer’s Lake to St Margaret’s Bay Rd to Rotary",
+   "fare": 59.75
+  },
+  {
+   "area": "Halifax",
+   "details": "South of the Armdale Rotary including up to the corner of Northwest Arm Dr and Old Sambro Rd to and including Williams Lake Rd",
+   "fare": 67.65
+  },
+  {
+   "area": "Halifax",
+   "details": "South of William Lake from corner of Spry Av off Herring Cove Rd to corner of North West Arm Dr and Old Sambro Rd and including Leiblin Park and Thornhill",
+   "fare": 73.3
+  },
+  {
+   "area": "Halifax",
+   "details": "Ragged Lake",
+   "fare": 67.65
+  },
+  {
+   "area": "Dartmouth",
+   "details": "From Hwy 118 exit 13 including Burnside, Shannon Park, Portland & Pleasant, west of Prince Albert Rd, Banook Lake and Main St",
+   "fare": 56.4
+  },
+  {
+   "area": "Dartmouth",
+   "details": "From Main St including up to Ross Rd and connecting to Cole Harbour Rd, West of Bisset Rd including Colby Village to Atholea Dr off Caldwell Rd",
+   "fare": 62.0
+  },
+  {
+   "area": "Dartmouth",
+   "details": "East of Portland & Pleasant up along Prince Albert Rd and Main St up to and including Bellmont Ave off Pleasant St",
+   "fare": 62.0
+  },
+  {
+   "area": "Dartmouth",
+   "details": "Beyond Atholea Dr off Caldwell Rd",
+   "fare": 67.65
+  },
+  {
+   "area": "Dartmouth",
+   "details": "Montegue Rd including Cherry Brook up to Lake Major Rd, including to Main St and Neilson Dr",
+   "fare": 56.4
+  },
+  {
+   "area": "Bedford",
+   "details": "From Lakeview, including Dartmouth Rd to Meadowbrook Dr off Bedford Hwy",
+   "fare": 42.85
+  },
+  {
+   "area": "Bedford",
+   "details": "From Meadowbrook Dr off of Bedford Hwy to and including Kearney Lake Rd to Hwy 102",
+   "fare": 50.75
+  },
+  {
+   "area": "Sackville",
+   "details": "Up to corner of Beaverbank Rd and Sackville Dr including Lucasville Rd until Hwy overpass and including Lakeview Rd crossing Cobequid Rd",
+   "fare": 42.85
+  },
+  {
+   "area": "Sackville",
+   "details": "Ashburn Golf Club to Terry Rd off Windgate Dr including Windsor Junction Rd until it meets with Cobequid Rd",
+   "fare": 37.2
+  },
+  {
+   "area": "Sackville",
+   "details": "Corner of Beaverbank Rd and Sackville Dr to Lucasville Rd until Hwy overpass and #1459 Sackville Dr. (old Sackville Club)",
+   "fare": 54.1
+  },
+  {
+   "area": "Sackville",
+   "details": "Beyond #1459 Sackville Dr. up to Lewis Lake",
+   "fare": 59.75
+  },
+  {
+   "area": "Beaverbank",
+   "details": "Including Sindha Dr and West of Terry Rd off Windgate Dr to corner of Beaverbank Rd and Sackville Dr",
+   "fare": 54.1
+  },
+  {
+   "area": "Beaverbank",
+   "details": "South of Pinehaven Rd including Kinsac Rd",
+   "fare": 59.75
+  },
+  {
+   "area": "Beaverbank",
+   "details": "From Kinsac Rd up to Beaverbank Villa",
+   "fare": 65.4
+  },
+  {
+   "area": "Beechville",
+   "details": "Including Lakeside Industrial Park to corner of St Margaret's Bay Rd and Prospect Rd",
+   "fare": 67.65
+  },
+  {
+   "area": "Brookside",
+   "details": "",
+   "fare": 83.45
+  },
+  {
+   "area": "Exhibition",
+   "details": "Corner of St Margaret's Bay Rd and Prospect Rd",
+   "fare": 67.65
+  },
+  {
+   "area": "Five Islands",
+   "details": "",
+   "fare": 86.8
+  },
+  {
+   "area": "Hammonds",
+   "details": "Hammonds Plains Rd and Kearney Lake Rd from Hwy",
+   "fare": 56.35
+  },
+  {
+   "area": "Hammonds",
+   "details": "Pockwock Road to End",
+   "fare": 67.65
+  },
+  {
+   "area": "Hammonds",
+   "details": "Pockwock Road to Highway 103",
+   "fare": 67.65
+  },
+  {
+   "area": "Herring Cove",
+   "details": "",
+   "fare": 86.8
+  },
+  {
+   "area": "Hubley",
+   "details": "",
+   "fare": 86.8
+  },
+  {
+   "area": "Kingswood",
+   "details": "",
+   "fare": 56.4
+  },
+  {
+   "area": "Lakeside",
+   "details": "",
+   "fare": 73.3
+  },
+  {
+   "area": "Tantallon",
+   "details": "",
+   "fare": 80.05
+  },
+  {
+   "area": "Tantallon",
+   "details": "Upper",
+   "fare": 74.4
+  },
+  {
+   "area": "Timberlea",
+   "details": "East of Cranberry Ln off St Margaret's Bay Rd",
+   "fare": 73.3
+  }
+ ],
+ "airportToHRM": [
+  {
+   "area": "Halifax",
+   "fare": "$63.00"
+  },
+  {
+   "area": "Timberlea",
+   "fare": "$78.00"
+  },
+  {
+   "area": "Armdale",
+   "fare": "$62.00"
+  },
+  {
+   "area": "Beachville",
+   "fare": "$65.00"
+  },
+  {
+   "area": "Spryfield North",
+   "fare": "$65.00"
+  },
+  {
+   "area": "Spryfield South Of Rotary",
+   "fare": "$72.00"
+  },
+  {
+   "area": "Spryfield South Of Williams Lake",
+   "fare": "$78.00"
+  },
+  {
+   "area": "Dartmouth",
+   "fare": "$55.00"
+  },
+  {
+   "area": "Dartmouth (From Main St To Portland)",
+   "fare": "$65.00"
+  },
+  {
+   "area": "Manor Park, Woodlawn, Forest Hills, Portland Estates, Woodside, Colby Village",
+   "fare": "$60.00"
+  },
+  {
+   "area": "Shearwater & Eastern Passage",
+   "fare": "$70.00"
+  },
+  {
+   "area": "Beaver Bank",
+   "fare": "$58 to $69"
+  },
+  {
+   "area": "Lucasville Rd to county line, Springfield Lake, Lakecrest Dr, Fenerty Rd and Lakeview Ave",
+   "fare": "$65.00"
+  }
+ ],
+ "airportFlatByArea": [
+  {
+   "area": "Halifax",
+   "toAirport": {
+    "SED": 60,
+    "SUV": 75
+   },
+   "fromAirport": {
+    "SED": 75,
+    "SUV": 93
+   },
+   "note": "Halifax Peninsula"
+  },
+  {
+   "area": "Cowie Hill",
+   "toAirport": {
+    "SED": 65,
+    "SUV": 80
+   },
+   "fromAirport": {
+    "SED": 75,
+    "SUV": 95
+   },
+   "note": "Past Rotary, Walter Havill Dr."
+  },
+  {
+   "area": "Spryfield",
+   "toAirport": {
+    "SED": 70,
+    "SUV": 85
+   },
+   "fromAirport": {
+    "SED": 81,
+    "SUV": 98
+   },
+   "note": "Past St. Michaels Ave"
+  },
+  {
+   "area": "Bedford",
+   "toAirport": {
+    "SED": 60,
+    "SUV": 70
+   },
+   "fromAirport": {
+    "SED": 71,
+    "SUV": 86
+   },
+   "note": "Up to Hammonds Plains Rd"
+  },
+  {
+   "area": "Upper Hammonds Plains",
+   "toAirport": {
+    "SED": 75,
+    "SUV": 85
+   },
+   "fromAirport": {
+    "SED": 86,
+    "SUV": 98
+   },
+   "note": "Lucasville Rd to Yankeetown Rd"
+  },
+  {
+   "area": "Dartmouth",
+   "toAirport": {
+    "SED": 60,
+    "SUV": 75
+   },
+   "fromAirport": {
+    "SED": 71,
+    "SUV": 86
+   },
+   "note": "Burnside, Downtown, Waverley, Loon Lake"
+  },
+  {
+   "area": "Cole Harbour",
+   "toAirport": {
+    "SED": 60,
+    "SUV": 70
+   },
+   "fromAirport": {
+    "SED": 72,
+    "SUV": 81
+   },
+   "note": ""
+  },
+  {
+   "area": "Eastern Passage",
+   "toAirport": {
+    "SED": 78,
+    "SUV": 88
+   },
+   "fromAirport": {
+    "SED": 88,
+    "SUV": 99
+   },
+   "note": "Past Shearwater"
+  },
+  {
+   "area": "Fall River",
+   "toAirport": {
+    "SED": 60,
+    "SUV": 70
+   },
+   "fromAirport": {
+    "SED": 71,
+    "SUV": 85
+   },
+   "note": ""
+  },
+  {
+   "area": "Lower Sackville",
+   "toAirport": {
+    "SED": 60,
+    "SUV": 70
+   },
+   "fromAirport": {
+    "SED": 71,
+    "SUV": 85
+   },
+   "note": ""
+  },
+  {
+   "area": "Middle Sackville",
+   "toAirport": {
+    "SED": 66,
+    "SUV": 77
+   },
+   "fromAirport": {
+    "SED": 77,
+    "SUV": 95
+   },
+   "note": ""
+  },
+  {
+   "area": "Upper Sackville",
+   "toAirport": {
+    "SED": 71,
+    "SUV": 85
+   },
+   "fromAirport": {
+    "SED": 81,
+    "SUV": 98
+   },
+   "note": ""
+  }
+ ]
+}

@@ -1,0 +1,257 @@
+{
+ "airport-meet-greet": {
+  "widths": [
+   640,
+   1024,
+   1536
+  ],
+  "w": 1536,
+  "h": 1024
+ },
+ "airport-traveller": {
+  "widths": [
+   640,
+   1000
+  ],
+  "w": 1000,
+  "h": 667
+ },
+ "name-sign-yhz": {
+  "widths": [
+   480,
+   800
+  ],
+  "w": 800,
+  "h": 1200
+ },
+ "nova-scotia-service-map": {
+  "widths": [
+   640,
+   1024,
+   1536
+  ],
+  "w": 1536,
+  "h": 1024
+ },
+ "private-jet-pickup": {
+  "widths": [
+   640
+  ],
+  "w": 640,
+  "h": 427
+ },
+ "yhz-baggage-claim": {
+  "widths": [
+   480,
+   960
+  ],
+  "w": 960,
+  "h": 720
+ },
+ "yhz-information-desk": {
+  "widths": [
+   480,
+   960
+  ],
+  "w": 960,
+  "h": 720
+ },
+ "yhz-pickup-point": {
+  "widths": [
+   480,
+   900
+  ],
+  "w": 900,
+  "h": 675
+ },
+ "yhz-curbside-lane": {
+  "widths": [
+   480,
+   960
+  ],
+  "w": 960,
+  "h": 720
+ },
+ "sackville-yard-winter": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 800
+ },
+ "sackville-yard-trucks": {
+  "widths": [
+   640,
+   1200
+  ],
+  "w": 1200,
+  "h": 800
+ },
+ "sackville-yard-sign": {
+  "widths": [
+   480,
+   800
+  ],
+  "w": 800,
+  "h": 1067
+ },
+ "golf-cabot-cliffs": {
+  "widths": [
+   480,
+   960
+  ],
+  "w": 960,
+  "h": 640
+ },
+ "golf-highlands-links": {
+  "widths": [
+   480,
+   960
+  ],
+  "w": 960,
+  "h": 638
+ },
+ "golf-fox-harbr": {
+  "widths": [
+   480,
+   945
+  ],
+  "w": 945,
+  "h": 630
+ },
+ "golf-digby-pines": {
+  "widths": [
+   480,
+   750
+  ],
+  "w": 750,
+  "h": 500
+ },
+ "golf-brunello": {
+  "widths": [
+   480,
+   900
+  ],
+  "w": 900,
+  "h": 600
+ },
+ "golf-northumberland": {
+  "widths": [
+   480,
+   960
+  ],
+  "w": 960,
+  "h": 640
+ },
+ "peggys-cove-lighthouse": {
+  "widths": [
+   640,
+   1024,
+   1600
+  ],
+  "w": 1600,
+  "h": 1066
+ },
+ "lunenburg-harbour": {
+  "widths": [
+   640,
+   1024,
+   1600
+  ],
+  "w": 1600,
+  "h": 1067
+ },
+ "peggys-cove-thumb": {
+  "widths": [
+   190
+  ],
+  "w": 190,
+  "h": 190
+ },
+ "lunenburg-thumb": {
+  "widths": [
+   190
+  ],
+  "w": 190,
+  "h": 190
+ },
+ "chester-thumb": {
+  "widths": [
+   190
+  ],
+  "w": 190,
+  "h": 190
+ },
+ "crystal-crescent-thumb": {
+  "widths": [
+   190
+  ],
+  "w": 190,
+  "h": 190
+ },
+ "acadia-thumb": {
+  "widths": [
+   190
+  ],
+  "w": 190,
+  "h": 190
+ },
+ "car-lockout": {
+  "widths": [
+   640,
+   1024
+  ],
+  "w": 1024,
+  "h": 683
+ },
+ "chauffeur-door": {
+  "widths": [
+   640,
+   1024,
+   1279
+  ],
+  "w": 1279,
+  "h": 854
+ },
+ "chauffeur-driving": {
+  "widths": [
+   640,
+   1024
+  ],
+  "w": 1024,
+  "h": 1280
+ },
+ "driver-cockpit": {
+  "widths": [
+   640,
+   1024
+  ],
+  "w": 1024,
+  "h": 683
+ },
+ "passenger-call": {
+  "widths": [
+   640,
+   1024
+  ],
+  "w": 1024,
+  "h": 683
+ },
+ "courier-delivery": {
+  "widths": [
+   640,
+   1024
+  ],
+  "w": 1024,
+  "h": 683
+ },
+ "boat-trip": {
+  "widths": [
+   640,
+   1024
+  ],
+  "w": 1024,
+  "h": 682
+ }
+}
