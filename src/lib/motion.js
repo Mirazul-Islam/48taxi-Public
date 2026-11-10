@@ -1,9 +1,22 @@
 // Tiny motion runtime: reveal-on-scroll, image wipes, count-up numbers, pointer spotlight,
-// and Lenis smooth scrolling on desktop. Called after every route render.
+// and Lenis smooth scrolling on desktop.
+//
+// It watches the DOM itself (MutationObserver), so any element with data-reveal / data-wipe /
+// data-count is picked up automatically: on first load, after client-side navigation, when a
+// lazy page chunk arrives, or when React re-renders a section. No page has to remember to call it.
 const reduce = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SEL = '[data-reveal], [data-wipe], [data-count]';
 
 let io;
+let mo;
 let lenis;
+let queued = false;
+
+function reveal(el) {
+  el.__shown = true;
+  el.classList.add('in');
+  if (el.hasAttribute('data-count') && !el.__counted) { el.__counted = true; countUp(el); }
+}
 
 function observer() {
   if (io) return io;
@@ -12,15 +25,41 @@ function observer() {
       for (const e of entries) {
         if (!e.isIntersecting) continue;
         // Wipes are observed through their parent: a fully clipped element never "intersects".
-        const el = e.target.__wipe || e.target;
-        el.classList.add('in');
-        if (el.hasAttribute('data-count')) countUp(el);
-        io.unobserve(el);
+        reveal(e.target.__wipe || e.target);
+        io.unobserve(e.target);
       }
     },
-    { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+    // threshold 0 so even very tall blocks reveal as soon as their top edge enters the view
+    { rootMargin: '0px 0px -6% 0px', threshold: 0 },
   );
   return io;
+}
+
+function register(el) {
+  if (el.__registered) return;
+  el.__registered = true;
+  if (el.hasAttribute('data-wipe')) {
+    const host = el.parentElement || el;
+    host.__wipe = el;
+    observer().observe(host);
+  } else {
+    observer().observe(el);
+  }
+}
+
+function scan() {
+  queued = false;
+  document.querySelectorAll(SEL).forEach((el) => {
+    if (el.__shown && !el.classList.contains('in')) el.classList.add('in'); // React replaced className
+    else register(el);
+  });
+  spotlight(document);
+}
+
+function queueScan() {
+  if (queued) return;
+  queued = true;
+  requestAnimationFrame(scan);
 }
 
 function countUp(el) {
@@ -51,17 +90,20 @@ function spotlight(root) {
   });
 }
 
+/** Start once; safe to call again (e.g. after each route render). */
 export function initMotion() {
   if (typeof window === 'undefined') return;
   clearTimeout(window.__rv);
-  const o = observer();
-  document.querySelectorAll('[data-reveal]:not(.in), [data-count]:not(.in)').forEach((el) => o.observe(el));
-  document.querySelectorAll('[data-wipe]:not(.in)').forEach((el) => {
-    const host = el.parentElement || el;
-    host.__wipe = el;
-    o.observe(host);
-  });
-  spotlight(document);
+  if (!mo) {
+    mo = new MutationObserver((records) => {
+      for (const r of records) {
+        if (r.type === 'childList' && r.addedNodes.length) { queueScan(); return; }
+        if (r.type === 'attributes' && r.target.__shown && !r.target.classList.contains('in')) r.target.classList.add('in');
+      }
+    });
+    mo.observe(document.getElementById('root') || document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  }
+  scan();
 }
 
 export async function initSmoothScroll() {
@@ -74,7 +116,7 @@ export async function initSmoothScroll() {
 }
 
 export function scrollToTop() {
-  if (lenis) lenis.scrollTo(0, { immediate: true });
+  if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
   else window.scrollTo(0, 0);
 }
 

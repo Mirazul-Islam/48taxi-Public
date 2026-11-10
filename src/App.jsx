@@ -24,7 +24,7 @@ function useHeadSync() {
   }, [pathname, hash]);
 }
 
-/** Runs the motion runtime once the (lazy) page content has actually rendered. */
+/** Starts the motion runtime when a page mounts (it then keeps watching the DOM by itself). */
 function RouteShell({ children }) {
   useEffect(() => { initMotion(); }, []);
   return children;
@@ -40,9 +40,9 @@ export default function App() {
         <Suspense fallback={<div className="min-h-[70vh]" />}>
           <Routes>
             {routes.map(({ path, Component }) => (
-              <Route key={path} path={path} element={<RouteShell><Component path={path} /></RouteShell>} />
+              <Route key={path} path={path} element={<RouteShell key={path}><Component path={path} /></RouteShell>} />
             ))}
-            <Route path="*" element={<RouteShell><NotFound /></RouteShell>} />
+            <Route path="*" element={<RouteShell key="404"><NotFound /></RouteShell>} />
           </Routes>
         </Suspense>
       </main>
