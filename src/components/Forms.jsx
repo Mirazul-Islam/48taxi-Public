@@ -5,30 +5,6 @@ import { airportFares, money } from '../data/fares.js';
 import { business, telHref } from '../data/site.js';
 import { requestEstimate } from '../lib/estimate.js';
 
-/* ---------------- Lockout / battery ---------------- */
-export function LockoutForm() {
-  const f = useForm('lockout', { service: 'Lockout (from $85)' });
-  if (f.status === 'done') return <FormStatus f={f} title="Request sent" done="We’re on it. A dispatcher will call you right back to confirm location and timing. For the fastest help, call us now." />;
-  return (
-    <form name="lockout" onSubmit={f.onSubmit} className="grid gap-4 sm:grid-cols-2">
-      <Honeypot f={f} />
-      <Select f={f} name="service" label="Service needed" required options={['Lockout (from $85)', 'Battery boost ($48 in HRM)']} className="sm:col-span-2" />
-      <Input f={f} name="firstName" label="First name" required autoComplete="given-name" />
-      <Input f={f} name="lastName" label="Last name" required autoComplete="family-name" />
-      <Input f={f} name="phone" type="tel" label="Phone" required autoComplete="tel" />
-      <Input f={f} name="email" type="email" label="Email" autoComplete="email" />
-      <Input f={f} name="vehicleLocation" label="Vehicle location" required className="sm:col-span-2" hint="Street address or nearest intersection." />
-      <Input f={f} name="vehicleModel" label="Vehicle make & model" required />
-      <Input f={f} name="year" label="Year" inputMode="numeric" />
-      <Input f={f} name="colour" label="Colour" />
-      <Input f={f} name="plate" label="Plate number" />
-      <div className="sm:col-span-2"><Check f={f} name="agree" required>I agree to the service policy below and will show my driver’s licence, ownership and insurance on request.</Check></div>
-      <div className="sm:col-span-2"><FormStatus f={f} /></div>
-      <div className="sm:col-span-2 flex flex-wrap gap-3"><SubmitButton f={f}>Request service</SubmitButton><a href={telHref} className="btn-ghost">Faster: call {business.phone.display}</a></div>
-    </form>
-  );
-}
-
 /* ---------------- Contact & affiliate ---------------- */
 export function ContactForm() {
   const f = useForm('contact');

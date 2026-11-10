@@ -1,45 +1,9 @@
 import { Link } from 'react-router-dom';
 import { PageHero, Section, Pic, Checklist, Faq, CtaBand, CallButton, Reviews } from '../components/ui.jsx';
-import { LockoutForm } from '../components/Forms.jsx';
 import { faqsFor } from '../lib/seo.js';
 import { vehicles, hotels } from '../data/content.js';
 import { hourly, groupDiscount, fareNotes } from '../data/fares.js';
 import { business, telHref } from '../data/site.js';
-
-/* ---------------- /slim-jim/ ---------------- */
-export function SlimJim() {
-  const path = '/slim-jim/';
-  return (
-    <>
-      <PageHero path={path} eyebrow="48Taxi road services" title="Car lockout & battery boost in Halifax and Dartmouth" img="car-lockout" imgAlt="Keys locked inside a car" actions={false}>
-        <p>Locked out of your car? Keys left inside, misplaced, or locks that simply fail can leave you stuck on the wrong side of the door. Prying a window open can cause costly damage. Our fully insured vehicle unlocking specialists provide fast, reliable service at affordable rates, starting from <b>$85</b>.</p>
-        <div className="mt-6 flex flex-wrap gap-3"><a href={telHref} className="btn-primary">Call now: {business.phone.display}</a><a href="#request" className="btn-ghost">Request online</a></div>
-      </PageHero>
-      <Section title="Services and prices">
-        <div className="grid gap-5 md:grid-cols-2">
-          <div className="card"><h3 className="text-lg font-semibold">Lockout service · from $85</h3><p className="mt-2 text-ink-2">If your keys are locked in the vehicle, we send service to gain entry. If your keys are lost or broken, we cannot gain entry into your vehicle. $85 cash anywhere in HRM, or $85 + tax by card. Price may vary with vehicle type, size and model, time of day, weekends and holidays, and outside HRM.</p></div>
-          <div className="card"><h3 className="text-lg font-semibold">Battery boost · $48 in HRM</h3><p className="mt-2 text-ink-2">Our mobile battery service comes to you to test and boost your battery and get you on your way. The driver is paid up front before the battery boost.</p></div>
-        </div>
-      </Section>
-      <Section id="request" title="Request lockout or battery service" className="bg-band">
-        <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
-          <div className="card p-6"><LockoutForm /></div>
-          <div className="text-[15px] text-ink-2">
-            <h3 className="font-semibold text-ink">Service policy</h3>
-            <ul className="mt-3 list-disc space-y-2 pl-5">
-              <li>You must remain at or near the vehicle to receive service (we will accommodate you in extenuating circumstances).</li>
-              <li>48taxi Road Services is not liable for any damages or scratches that may occur as a result of unlocking.</li>
-              <li>By calling and requesting our service, you agree we are not responsible for any damage to your vehicle.</li>
-              <li>Our drivers may ask to see your driver’s licence, ownership and insurance.</li>
-              <li>Price may vary depending on location.</li>
-            </ul>
-          </div>
-        </div>
-      </Section>
-      <CtaBand title="Stuck right now?" text="Calling is the fastest way to get help, day or night." />
-    </>
-  );
-}
 
 /* ---------------- /halifax-limo-service/ (new) ---------------- */
 export function Limo() {

@@ -9,9 +9,9 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
 const SITE = 'https://48taxi.co';
-const LEGACY = ['/', '/about/', '/affiliate/', '/book-now/', '/careers/', '/contact/', '/gti/', '/privacy-policy/', '/refund-policy/', '/return-policy-cancellation-policy/', '/schedule/', '/services-rates/', '/slim-jim/', '/tour/'];
+const LEGACY = ['/', '/about/', '/affiliate/', '/book-now/', '/careers/', '/contact/', '/gti/', '/privacy-policy/', '/refund-policy/', '/return-policy-cancellation-policy/', '/schedule/', '/services-rates/', '/tour/'];
 // Retired on purpose; must stay as 301 redirects so their links and rankings pass on.
-const RETIRED = { '/parkfly/': '/halifax-airport-taxi/', '/truck-container-parking/': '/' };
+const RETIRED = { '/parkfly/': '/halifax-airport-taxi/', '/truck-container-parking/': '/', '/slim-jim/': '/' };
 
 const files = [];
 const walk = (d) => readdirSync(d).forEach((f) => { const p = join(d, f); statSync(p).isDirectory() ? walk(p) : p.endsWith('index.html') && files.push(p); });

@@ -31,7 +31,6 @@ const MAP = {
   'chester-thumb': ['chester-190x190_c.jpg', [190]],
   'crystal-crescent-thumb': ['beach-190x190_c.jpg', [190]],
   'acadia-thumb': ['acadia-university-campus-image-190x190_c.jpg', [190]],
-  'car-lockout': ['locked-keys-car-1.jpg', [640, 1024], 3 / 2],
   'chauffeur-door': ['pexels-pavel-danilyuk-8425047.jpg', [640, 1024, 1600], 3 / 2],
   'chauffeur-driving': ['pexels-vitaliy-photo-503045294-18679016.jpg', [640, 1024], 4 / 5],
   'driver-cockpit': ['pexels-matheus-amaral-74119761-33493503-scaled.jpg', [640, 1024], 3 / 2],

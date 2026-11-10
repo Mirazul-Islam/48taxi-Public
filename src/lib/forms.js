@@ -11,7 +11,6 @@ export const FORMS = {
     'vehicle', 'passengers', 'luggage', 'meetGreet', 'childSeats', 'wakeUpCall', 'assistBags', 'requestType',
     'estimate', 'notes', 'coupon', 'agreeTerms',
   ],
-  lockout: ['firstName', 'lastName', 'email', 'phone', 'service', 'address', 'vehicleLocation', 'vehicleModel', 'colour', 'year', 'plate', 'agree'],
   contact: ['name', 'email', 'phone', 'message'],
   affiliate: ['company', 'phone', 'tollFree', 'fax', 'mailingAddress', 'suite', 'city', 'province', 'postalCode', 'website', 'email', 'contactPerson', 'yearsInBusiness'],
 };

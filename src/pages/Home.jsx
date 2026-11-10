@@ -4,6 +4,7 @@ import { Pic, Icon, Arrow, CtaBand, Ratings, BookButton, CallButton, Stars, Mask
 import { popularServices, golf, hotels, reviews, tours } from '../data/content.js';
 import { airportFares, perPerson, money, longDistanceNS } from '../data/fares.js';
 import { business } from '../data/site.js';
+import DoorScene from '../components/DoorScene.jsx';
 
 /* ------------------------------------------------------------------ */
 /* Hero booking bar: collects the trip and hands it to /book-now/.      */
@@ -400,6 +401,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <DoorScene />
       <div className="border-y border-white/[0.06] bg-brand-700 py-4 text-[15px] font-semibold uppercase tracking-[0.18em] text-onaccent">
         <Ticker items={places} speed="50s" className="[&_.text-brand-700]:text-onaccent/60" />
       </div>

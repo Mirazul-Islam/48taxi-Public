@@ -97,19 +97,6 @@ export function jsonLd(path) {
       url,
     });
   }
-  if (kinds.includes('lockout')) {
-    graph.push({
-      '@type': 'Service',
-      '@id': `${url}#service`,
-      serviceType: 'Vehicle lockout and battery boost',
-      provider: { '@id': `${SITE_URL}/#business` },
-      areaServed: { '@type': 'Place', name: 'Halifax Regional Municipality' },
-      offers: [
-        { '@type': 'Offer', name: 'Vehicle unlocking', price: '85', priceCurrency: 'CAD' },
-        { '@type': 'Offer', name: 'Battery boost', price: '48', priceCurrency: 'CAD' },
-      ],
-    });
-  }
   const f = kinds.includes('faq') ? faqsFor(m.path) : null;
   if (f) {
     graph.push({

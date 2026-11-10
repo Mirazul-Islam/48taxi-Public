@@ -50,7 +50,6 @@ export const popularServices = [
   { title: 'Private jet pickups', text: 'Discreet chauffeured pickups at private terminals and FBOs.', to: '/halifax-limo-service/', img: 'private-jet-pickup' },
   { title: 'Boat trips', text: 'Rides to harbour cruises, ferries and the Bluenose II.', to: '/tour/', img: 'boat-trip' },
   { title: 'Courier service', text: 'Same-day parcel and document delivery across HRM.', to: '/contact/', img: 'courier-delivery' },
-  { title: 'Locked out of vehicle', text: 'Car lockout and battery boost, day or night, across HRM.', to: '/slim-jim/', img: 'car-lockout' },
 ];
 
 export const vehicles = [
