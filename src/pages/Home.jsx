@@ -231,7 +231,7 @@ function Fleet() {
         {VEHICLES.filter((v) => images[v.img]).map((v, i) => (
           <article key={v.model} className="group spotlight relative w-[82vw] flex-none snap-start overflow-hidden rounded-[28px] border border-white/[0.08] bg-card sm:w-[420px]" data-reveal style={{ '--d': `${Math.min(i, 3) * 90}ms` }}>
             {/* showroom stage: warm key light, floor reflection, soft contact shadow */}
-            <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(70%_60%_at_50%_35%,rgba(253,152,0,0.16),transparent_70%),linear-gradient(to_bottom,#2f2320,#1a1210)]">
+            <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(70%_60%_at_50%_35%,rgba(253,152,0,0.16),transparent_70%),linear-gradient(to_bottom,#3a2416,#1d1009)]">
               <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[34%] bg-gradient-to-b from-white/[0.035] to-transparent" />
               <span aria-hidden="true" className="absolute inset-x-[14%] bottom-[15%] h-5 rounded-[50%] bg-black/70 blur-lg" />
               <span aria-hidden="true" className="display absolute -right-2 -top-3 text-[7rem] leading-none text-white/[0.04]">0{i + 1}</span>
