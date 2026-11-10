@@ -452,7 +452,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <CtaBand title="From the airport in Canada & USA, we’ve got you covered." text="Comfort. Reliability. 48 Taxi. Book online or call, any hour." />
+      <CtaBand title="Flying in or out of Halifax Stanfield? We’ve got you covered." text="Comfort. Reliability. 48 Taxi. Book online or call, any hour." />
     </>
   );
 }
