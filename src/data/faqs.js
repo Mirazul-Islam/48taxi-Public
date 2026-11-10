@@ -19,7 +19,7 @@ export const faqs = {
     ['Is gratuity included?', 'Gratuity is not included. A minimum 15% gratuity surcharge applies to prepaid and billed reservations.'],
   ],
   '/airport-shuttle-halifax/': [
-    ['Is there a cheaper alternative to a private taxi to YHZ?', 'Yes. Groups of three or more ride for $20 per person and pairs for $30 per person within the standard coverage area, paid in cash in the car.'],
+    ['What is the best option for a group going to YHZ?', 'Book one minivan or Chevy Suburban for the whole group (up to 7 passengers with luggage) instead of separate cars. Groups travelling outside HRM can save up to 20%.'],
     ['Is this a shared shuttle with other passengers?', 'We typically provide private transportation. In rare cases, and only when operationally needed, passengers departing from the same area may share a ride.'],
     ['Can you take a large group with luggage?', 'Yes. Chevy Suburbans and minivans carry 6–7 passengers with luggage. For larger groups we send more than one vehicle.'],
   ],

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Pic, Icon, Arrow, CtaBand, Ratings, BookButton, CallButton, Stars, MaskTitle, WhatsAppIcon } from '../components/ui.jsx';
 import { popularServices, golf, hotels, reviews, tours } from '../data/content.js';
-import { perPerson, money } from '../data/fares.js';
 import { PRICING, VEHICLES } from '../lib/pricing.js';
 import { Cutout } from '../components/Visuals.jsx';
 import AddressInput, { addrText, isPicked } from '../components/AddressInput.jsx';
@@ -357,28 +356,6 @@ function Testimonials() {
   );
 }
 
-function PerPerson() {
-  return (
-    <section className="py-24 sm:py-32">
-      <div className="wrap">
-        <SectionHead num="06" eyebrow="Per-person fares" title="Travelling together? <em>Pay per person.</em>" intro="Within our standard coverage area. Outside it, additional fees apply." />
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {perPerson.map((p, i) => (
-            <div key={p.label} className={`card spotlight flex flex-col p-8 ${i === 0 ? 'border-brand-700/40 bg-gradient-to-b from-brand-700/10 to-card' : ''}`} data-reveal style={{ '--d': `${i * 90}ms` }}>
-              <div className="flex items-center justify-between"><p className="font-medium text-ink-2">{p.label}</p>{i === 0 && <span className="chip border-brand-700/40 text-brand-700">Best value</span>}</div>
-              <p className="display mt-6 text-7xl text-white">{money(p.price)}<span className="font-sans text-base text-ink-3"> / person</span></p>
-              <ul className="mt-6 flex-1 space-y-2.5 border-t border-white/[0.08] pt-6 text-[15px] text-ink-2">
-                {p.points.map((x) => <li key={x} className="flex gap-2.5"><Icon name="check" className="mt-0.5 h-4 w-4 flex-none text-brand-700" />{x}</li>)}
-              </ul>
-              <BookButton className={`${i === 0 ? 'btn-primary' : 'btn-ghost'} mt-8 w-full`}>Book</BookButton>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export default function Home() {
   const places = ['Halifax Stanfield (YHZ)', 'Peggy’s Cove', 'Lunenburg', 'Dartmouth', 'Bedford', 'Truro', 'Wolfville', 'Cabot Trail', 'Mahone Bay', 'Chester'];
   return (
@@ -394,7 +371,6 @@ export default function Home() {
       <HowItWorks />
       <Tours />
       <Testimonials />
-      <PerPerson />
       <section className="border-t border-white/[0.06] py-16" aria-label="Hotels we serve">
         <p className="wrap eyebrow">Trusted by guests of Halifax’s best hotels</p>
         <div className="mt-8 text-2xl text-ink-3 [&_.display]:text-ink-2">

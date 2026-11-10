@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { PageHero, Section, Pic, Checklist, Faq, CtaBand, Reviews, Icon } from '../components/ui.jsx';
 import { FareEstimator, FareFormula, VehicleTable, AddonTable, WaitingTable } from '../components/Pricing.jsx';
 import { YHZ } from '../lib/maps.js';
-import { fareNotes, hourly, groupDiscount, perPerson, money } from '../data/fares.js';
+import { fareNotes, hourly, groupDiscount } from '../data/fares.js';
 import { getaways, vehicles } from '../data/content.js';
 import { faqsFor } from '../lib/seo.js';
 import { business, telHref } from '../data/site.js';
@@ -76,16 +76,9 @@ export function AirportShuttle() {
   return (
     <>
       <PageHero path={path} eyebrow="Halifax airport shuttle alternatives" title="Halifax airport shuttle, door to door" img="chauffeur-door" imgAlt="Chauffeur opening a car door for a passenger">
-        Skip the shuttle stops and bus schedules. Ride door to door to Halifax Stanfield with per-person group fares, a private car, or a family SUV with room for everyone’s luggage.
+        Skip the shuttle stops and bus schedules. Ride door to door to Halifax Stanfield in a private car, or a family SUV or minivan with room for everyone’s luggage.
       </PageHero>
-      <Section title="Per-person airport fares" intro="Within our standard coverage area; additional fees apply outside it.">
-        <div className="grid gap-5 md:grid-cols-3">
-          {perPerson.map((p) => (
-            <div key={p.label} className="card"><p className="font-semibold text-ink-2">{p.label}</p><p className="mt-2 text-4xl font-extrabold">{money(p.price)}<span className="text-base font-semibold text-ink-3"> / person</span></p><Checklist items={p.points} className="mt-4 text-[15px] text-ink-2" /></div>
-          ))}
-        </div>
-      </Section>
-      <Section title="Three ways to get to YHZ" className="bg-band">
+      <Section title="Three ways to get to YHZ">
         <div className="grid gap-5 md:grid-cols-3">
           {[
             ['Private airport taxi', 'Priced by distance at $2 per km with a $48 minimum. Your car, your schedule.', '/halifax-airport-taxi/', 'Airport taxi fares'],

@@ -11,7 +11,7 @@ const nav = [
     label: 'Services',
     children: [
       { to: '/halifax-limo-service/', label: 'Limo service', note: 'Escalade, Suburban, Lincoln' },
-      { to: '/airport-shuttle-halifax/', label: 'Airport shuttle', note: 'Group fares from $20' },
+      { to: '/airport-shuttle-halifax/', label: 'Airport shuttle', note: 'Door to door, groups welcome' },
       { to: '/corporate-hotel-transportation/', label: 'Corporate & hotels', note: 'Billed accounts' },
       { to: '/services-rates/', label: 'Rates & extras', note: '$2/km, $48 minimum' },
       { to: '/service-areas/', label: 'Service areas', note: 'All of Nova Scotia' },
@@ -117,7 +117,7 @@ const footerCols = [
   {
     title: 'Rides',
     links: [
-      ['/halifax-airport-taxi/', 'Halifax airport taxi'], ['/halifax-limo-service/', 'Limo service'], ['/airport-shuttle-halifax/', 'Airport shuttle & group fares'],
+      ['/halifax-airport-taxi/', 'Halifax airport taxi'], ['/halifax-limo-service/', 'Limo service'], ['/airport-shuttle-halifax/', 'Airport shuttle alternative'],
       ['/tour/', 'Tours'], ['/tour/peggys-cove/', 'Peggy’s Cove tour'], ['/corporate-hotel-transportation/', 'Corporate & hotels'], ['/book-now/', 'Book now'],
     ],
   },

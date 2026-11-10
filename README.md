@@ -134,7 +134,7 @@ These are taken from the current site, but they conflict or are unclear:
 2. **Hours:** the site says 24/7, but the old schema said Mon–Sun 09:00–17:00. This build uses **24/7**.
 3. **Main phone:** (902) 789-7777 is primary, with (902) 488-8882 and 1 (866) 482-9090 shown as secondary numbers.
 4. **Pricing** follows the November 2026 pricing guide and lives in one file, `src/lib/pricing.js`: the higher of $48 or $2/km plus the vehicle surcharge, extras, and waiting time. The old flat fare tables (by area, by zone, and long distance) were removed. Not covered by the guide, so kept as they were: hourly rates ($70 sedan / $95 SUV), the 15% minimum gratuity on prepaid and billed trips, and the 20% group discount outside HRM. Taxes aren't mentioned in the guide, so the site doesn't say whether HST is included.
-5. **Per-person fares ($20 / $30 / $60, cash):** the homepage didn't say what they apply to. They're shown here as airport per-person fares.
+5. **Per-person fares** ($20 / $30 / $60) were removed: no longer offered.
 6. **Charging extras after the ride (Stripe)** from the pricing guide isn't built yet. Until it is, the booking form's consent says waiting time and extras are "added to my fare"; switch to the guide's "charged to my card on file" wording once cards are saved at booking.
 7. **Hotel list** on the homepage and Corporate page: confirm each is a current partner.
 8. **Refund policy contact** lists `48taxii@gmail.com`; everywhere else uses `info@48taxi.co`.
