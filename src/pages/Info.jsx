@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { PageHero, Section, Pic, Checklist, Faq, CtaBand, Prose, Ratings, Icon } from '../components/ui.jsx';
+import { PageHero, Section, Pic, Checklist, Faq, CtaBand, Prose, Ratings, Icon, WhatsAppIcon } from '../components/ui.jsx';
 import BookingForm from '../components/BookingForm.jsx';
 import { ContactForm, AffiliateForm } from '../components/Forms.jsx';
 import { faqsFor } from '../lib/seo.js';
 import legal from '../data/legal.json';
-import { business, telHref, fullAddress } from '../data/site.js';
+import { business, telHref, fullAddress, whatsappHref } from '../data/site.js';
 
 export function BookNow() {
   const path = '/book-now/';
@@ -64,12 +64,13 @@ export function Contact() {
   return (
     <>
       <PageHero path={path} eyebrow="Contact us" title="Contact 48Taxi & Limo" actions={false}>
-        Reliable rides anytime. Call, email or send us a message and we’ll get back to you promptly.
+        Reliable rides anytime. Call, WhatsApp, email or send us a message and we’ll get back to you promptly.
       </PageHero>
       <section className="py-10 sm:py-14">
         <div className="wrap grid gap-10 lg:grid-cols-[1fr_1.3fr]">
           <div className="space-y-6">
             {row('phone', 'Phone (24/7)', <><a href={telHref} className="block">{business.phone.display}</a><a href={`tel:${business.phone2.tel}`} className="block">{business.phone2.display}</a><a href={`tel:${business.tollFree.tel}`} className="block">Toll free {business.tollFree.display}</a></>)}
+            <div className="flex gap-3"><span className="mt-0.5"><WhatsAppIcon className="h-5 w-5 text-[#25D366]" /></span><div><p className="text-sm text-ink-3">WhatsApp (same number)</p><a href={whatsappHref()} target="_blank" rel="noopener" className="font-semibold">Chat on WhatsApp: {business.phone.display}</a><p className="mt-0.5 text-sm text-ink-3">Message us to book, change a pickup or share your flight.</p></div></div>
             {row('mail', 'Email', <a href={`mailto:${business.email}`}>{business.email}</a>)}
             {row('pin', 'Address', fullAddress)}
             {row('clock', 'Hours', business.hours)}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { business, telHref, fullAddress } from '../data/site.js';
-import { Icon, Arrow } from './ui.jsx';
+import { business, telHref, fullAddress, whatsappHref } from '../data/site.js';
+import { Icon, Arrow, WhatsAppIcon } from './ui.jsx';
 
 const nav = [
   { to: '/halifax-airport-taxi/', label: 'Airport' },
@@ -81,6 +81,9 @@ export function Header() {
             <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" /><span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" /></span>
             {business.phone.display}
           </a>
+          <a href={whatsappHref()} target="_blank" rel="noopener" aria-label={`Chat on WhatsApp at ${business.phone.display}`} title="Chat on WhatsApp" className="group hidden h-[42px] w-[42px] items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:border-[#25D366] hover:bg-[#25D366]/10 sm:flex">
+            <WhatsAppIcon className="h-[19px] w-[19px] text-[#25D366] transition-transform duration-300 group-hover:scale-110" />
+          </a>
           <Link to="/book-now/" className="btn-primary hidden min-h-[42px] px-5 text-[14px] sm:inline-flex">Book a ride <Arrow /></Link>
           <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? 'Close menu' : 'Open menu'} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 lg:hidden">
             <span className="relative block h-3 w-5">
@@ -101,8 +104,9 @@ export function Header() {
           ))}
         </nav>
         <div className="mt-8 grid grid-cols-2 gap-3">
-          <Link to="/book-now/" className="btn-primary">Book <Arrow /></Link>
+          <Link to="/book-now/" className="btn-primary col-span-2">Book a ride <Arrow /></Link>
           <a href={telHref} className="btn-ghost"><Icon name="phone" className="h-4 w-4" /> Call 24/7</a>
+          <a href={whatsappHref()} target="_blank" rel="noopener" className="btn-ghost"><WhatsAppIcon className="h-[18px] w-[18px] text-[#25D366]" /> WhatsApp</a>
         </div>
       </div>
     </header>
@@ -147,6 +151,7 @@ export function Footer() {
           <p className="display text-4xl text-white">Comfort. Reliability. <em>48 Taxi.</em></p>
           <address className="mt-8 space-y-3 text-[15px] not-italic">
             <a href={telHref} className="flex items-center gap-3 text-xl font-semibold text-white no-underline hover:text-brand-700"><Icon name="phone" className="h-5 w-5 text-brand-700" />{business.phone.display}</a>
+            <a href={whatsappHref()} target="_blank" rel="noopener" className="flex items-center gap-3 text-ink-2 no-underline hover:text-white"><WhatsAppIcon className="h-5 w-5 text-[#25D366]" />WhatsApp {business.phone.display}</a>
             <p className="pl-8 text-sm"><a href={`tel:${business.phone2.tel}`} className="text-ink-2 no-underline hover:text-white">{business.phone2.display}</a> · <a href={`tel:${business.tollFree.tel}`} className="text-ink-2 no-underline hover:text-white">{business.tollFree.display}</a></p>
             <a href={`mailto:${business.email}`} className="flex items-center gap-3 text-ink-2 no-underline hover:text-white"><Icon name="mail" className="h-5 w-5 text-brand-700" />{business.email}</a>
             <span className="flex items-start gap-3"><Icon name="pin" className="mt-0.5 h-5 w-5 flex-none text-brand-700" />{fullAddress}</span>
@@ -185,9 +190,10 @@ export function Footer() {
 /** Sticky call/book bar on phones: most taxi bookings start on mobile. */
 export function MobileActionBar() {
   return (
-    <div className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-2 gap-2 rounded-full border border-white/10 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl sm:hidden">
-      <a href={telHref} className="btn min-h-[44px] text-ink"><Icon name="phone" className="h-4 w-4" /> Call 24/7</a>
-      <Link to="/book-now/" className="btn-primary min-h-[44px]">Book a ride</Link>
+    <div className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-[1fr_auto_1.15fr] gap-1.5 rounded-full border border-white/10 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl sm:hidden">
+      <a href={telHref} className="btn min-h-[44px] px-3 text-ink"><Icon name="phone" className="h-4 w-4" /> Call</a>
+      <a href={whatsappHref()} target="_blank" rel="noopener" aria-label="WhatsApp" className="btn min-h-[44px] w-[52px] px-0 text-ink"><WhatsAppIcon className="h-[22px] w-[22px] text-[#25D366]" /></a>
+      <Link to="/book-now/" className="btn-primary min-h-[44px] px-3">Book a ride</Link>
     </div>
   );
 }

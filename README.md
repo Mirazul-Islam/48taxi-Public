@@ -57,6 +57,40 @@ npm run frames -- path/to/clip.mp4 --frames 120 --focus 0.6
 
 Visitors with "reduce motion" turned on see a still photo with the call to action instead.
 
+## Vehicle, luggage and seat pictures (license before going public)
+
+The booking form and the homepage fleet use cut-out pictures (transparent backgrounds) in `public/images/car-*` and `public/images/item-*`. For this demo they were copied from the same sources the current 48taxi.co booking form uses. **They belong to those sites, so get permission or licensed replacements before the site goes public.** Model years follow the current site.
+
+| Picture | Source |
+|---|---|
+| Toyota Corolla | fastly.clutch.ca |
+| Toyota Highlander (2024) | d2pcy90fy06bo7.cloudfront.net (dealer, London ON) |
+| Lincoln MKX | platform.cstatic-images.com (Cars.com stock photo) |
+| Dodge Grand Caravan (2020) | di-shared-assets.dealerinspire.com |
+| Cadillac Escalade (2019) | content-images.carmax.com (Evox stock image) |
+| Personal item | media.tatacroma.com |
+| Small carry-on | ca.beistravel.com |
+| Check-in (medium) | ca.monos.com |
+| Sports / oversize case | winter-guncases.com |
+| Pet carrier (dog) | petsdomain.com.au |
+| Pet carrier (cat) | i5.walmartimages.com |
+| Golf bag | sundaygolf.com |
+| Stroller | bambinofurniture.com |
+| Highback booster | ellaandelliot.com |
+| Infant car seat | maxicosi.com |
+
+Still missing (a simple line drawing shows instead): **2024 Toyota Camry, 2009 Lincoln MKS, 2018 Honda Odyssey, 2018 Chevy Suburban** (the current site's JD Power images refuse downloads), plus the large check-in suitcase, garment case and backless booster. The homepage fleet only shows cars that have a picture. To add one, drop a transparent PNG in and run:
+
+```bash
+node scripts/add-cutout.mjs path/to/2024-camry.png car-camry
+```
+
+(names: `car-corolla`, `car-camry`, `car-mks`, `car-highlander`, `car-mkx`, `car-caravan`, `car-odyssey`, `car-suburban`, `car-escalade`, `item-checkedLarge`, `item-garment`, `item-backless`, …)
+
+## WhatsApp
+
+WhatsApp uses the main number, (902) 789-7777 (`whatsappHref` in `src/data/site.js`), and opens a chat with a ready-made "I'd like to book a ride" message. It appears in the header, the phone action bar, the mobile menu, the hero, every call-to-action banner, the contact page, the footer and the booking confirmation. Make sure WhatsApp (ideally WhatsApp Business) is set up on that number.
+
 ## Run it locally
 
 ```bash

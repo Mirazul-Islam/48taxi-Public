@@ -6,6 +6,7 @@ import { business } from '../data/site.js';
 import { VEHICLES, DEFAULT_VEHICLE, ADDONS, PRICING, WAITING_TERMS, quote } from '../lib/pricing.js';
 import { QuoteBreakdown, useRoute } from './Pricing.jsx';
 import { money } from '../data/fares.js';
+import { Cutout, ItemCounter } from './Visuals.jsx';
 
 const YHZ = `Halifax Stanfield International Airport (YHZ), ${business.airport.address}`;
 const SERVICE = [['airport', 'Airport pickup / drop-off'], ['p2p', 'Point A → Point B'], ['hourly', 'Hourly / charter'], ['tours', 'Tours (Nova Scotia)']];
@@ -15,19 +16,6 @@ const PET_KEYS = ['petDog', 'petCat'];
 const OVERSIZE_KEYS = ['oversize', 'golf'];
 const luggagePrice = (k) => (PET_KEYS.includes(k) ? ADDONS.pet : OVERSIZE_KEYS.includes(k) ? ADDONS.oversize : 0);
 const CLASSES = [...new Set(VEHICLES.map((x) => x.cls))];
-
-function Counter({ label, value = 0, onChange, max = 5 }) {
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-line px-3 py-2">
-      <span className="text-[15px]">{label}</span>
-      <div className="flex items-center gap-2">
-        <button type="button" className="h-8 w-8 rounded-md border border-line text-lg leading-none disabled:opacity-40" onClick={() => onChange(Math.max(0, value - 1))} disabled={!value} aria-label={`Fewer: ${label}`}>−</button>
-        <span className="w-5 text-center tabular-nums" aria-live="polite">{value}</span>
-        <button type="button" className="h-8 w-8 rounded-md border border-line text-lg leading-none disabled:opacity-40" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max} aria-label={`More: ${label}`}>+</button>
-      </div>
-    </div>
-  );
-}
 
 export default function BookingForm() {
   const f = useForm('booking', { serviceType: '', tripType: 'One-way', vehicle: DEFAULT_VEHICLE, passengers: '1', requestType: 'Book now', contactPreference: 'Either', assistBags: '' });
@@ -188,14 +176,24 @@ export default function BookingForm() {
             {CLASSES.map((c) => (
               <div key={c}>
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-3">{c}</p>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {VEHICLES.filter((x) => x.cls === c).map((x) => (
-                    <label key={x.model} className={`cursor-pointer rounded-lg border p-3 text-[15px] transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand-700 ${v.vehicle === x.model ? 'border-brand-700 bg-brand-50 font-semibold' : 'border-line hover:border-white/30'}`}>
-                      <input type="radio" name="vehicle" value={x.model} checked={v.vehicle === x.model} onChange={f.set('vehicle')} className="sr-only" />
-                      {x.model}
-                      <span className="mt-1 block text-xs font-normal text-ink-3">Up to {x.pax} · {x.surcharge ? `+${money(x.surcharge)}` : 'no surcharge'}</span>
-                    </label>
-                  ))}
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                  {VEHICLES.filter((x) => x.cls === c).map((x) => {
+                    const on = v.vehicle === x.model;
+                    return (
+                      <label key={x.model} className={`group relative cursor-pointer overflow-hidden rounded-xl border text-[15px] transition-all duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand-700 ${on ? 'border-brand-700 bg-brand-700/[0.08] shadow-[0_10px_40px_-18px_rgba(253,152,0,0.6)]' : 'border-line bg-black/20 hover:border-white/30'}`}>
+                        <input type="radio" name="vehicle" value={x.model} checked={on} onChange={f.set('vehicle')} className="sr-only" />
+                        <span className="relative block h-24 px-2 pt-3 sm:h-28">
+                          <span aria-hidden="true" className={`absolute inset-x-4 bottom-2 h-4 rounded-[50%] blur-md transition-colors ${on ? 'bg-brand-700/40' : 'bg-black/60'}`} />
+                          <Cutout name={x.img} alt={`${x.year ? `${x.year} ` : ''}${x.model}`} sizes="(min-width: 640px) 220px, 45vw" className="relative h-full w-full" imgClass={`drop-shadow-[0_10px_12px_rgba(0,0,0,0.5)] transition-transform duration-500 ${on ? 'scale-[1.04]' : 'group-hover:scale-[1.04]'}`} />
+                        </span>
+                        <span className="block px-3 pb-3 pt-1">
+                          <span className={`block leading-tight ${on ? 'font-semibold text-white' : 'text-ink'}`}>{x.model}</span>
+                          <span className="mt-1 block text-xs text-ink-3">{x.year ? `${x.year} · ` : ''}Up to {x.pax} · <span className={x.surcharge ? 'text-brand-700' : ''}>{x.surcharge ? `+${money(x.surcharge)}` : 'no surcharge'}</span></span>
+                        </span>
+                        {on && <span aria-hidden="true" className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-700 text-[11px] font-bold text-onaccent">✓</span>}
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -205,8 +203,8 @@ export default function BookingForm() {
         <Select f={f} name="passengers" label="Passengers" required options={['1', '2', '3', '4', '5', '6', '7', '8+']} />
         <div className="sm:col-span-2">
           <p className="label">Luggage <span className="font-normal text-ink-3">(standard bags are free)</span></p>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {luggageTypes.map(([k, l]) => <Counter key={k} label={`${l}${luggagePrice(k) ? ` (+${money(luggagePrice(k))} each)` : ''}`} value={luggage[k] || 0} onChange={(n) => setLuggage({ ...luggage, [k]: n })} />)}
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+            {luggageTypes.map(([k, l]) => <ItemCounter key={k} id={k} label={l} note={luggagePrice(k) ? `+${money(luggagePrice(k))} each` : 'Free'} value={luggage[k] || 0} onChange={(n) => setLuggage({ ...luggage, [k]: n })} />)}
           </div>
         </div>
       </fieldset>
@@ -216,8 +214,8 @@ export default function BookingForm() {
         {isAirport && <Check f={f} name="meetGreet">Meet & greet ({money(ADDONS.meetGreet)}): your driver parks and waits inside arrivals with a name sign</Check>}
         <div>
           <p className="label">Child / booster seats</p>
-          <div className="grid gap-2 sm:grid-cols-3">
-            {SEATS.map(([k, l, price]) => <Counter key={k} label={`${l} (${money(price)})`} value={seats[k] || 0} onChange={(n) => setSeats({ ...seats, [k]: n })} />)}
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+            {SEATS.map(([k, l, price]) => <ItemCounter key={k} id={k} label={l} note={`${money(price)} each`} value={seats[k] || 0} onChange={(n) => setSeats({ ...seats, [k]: n })} />)}
           </div>
         </div>
         <Check f={f} name="wakeUpCall">Wake-up call ({money(ADDONS.wakeUpCall)})</Check>

@@ -42,4 +42,6 @@ export const business = {
 };
 
 export const telHref = `tel:${business.phone.tel}`;
+// WhatsApp uses the main number. Optional message pre-fills the chat.
+export const whatsappHref = (text = 'Hi 48 Taxi, I’d like to book a ride.') => `https://wa.me/${business.phone.tel.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
 export const fullAddress = `${business.address.street}, ${business.address.locality}, ${business.address.regionName}`;
