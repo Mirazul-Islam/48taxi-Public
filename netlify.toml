@@ -77,17 +77,27 @@
   from = "/tours/*"
   to = "/tour/"
   status = 301
+# Retired services (Park & Fly, truck & container parking). Permanent redirects pass any
+# links/rankings these old pages had to the closest live page.
+[[redirects]]
+  from = "/parkfly/*"
+  to = "/halifax-airport-taxi/"
+  status = 301
+[[redirects]]
+  from = "/truck-container-parking/*"
+  to = "/"
+  status = 301
 [[redirects]]
   from = "/park-and-fly/*"
-  to = "/parkfly/"
+  to = "/halifax-airport-taxi/"
   status = 301
 [[redirects]]
   from = "/park-fly/*"
-  to = "/parkfly/"
+  to = "/halifax-airport-taxi/"
   status = 301
 [[redirects]]
   from = "/truck-parking/*"
-  to = "/truck-container-parking/"
+  to = "/"
   status = 301
 [[redirects]]
   from = "/airport-pickup/*"

@@ -1,22 +1,21 @@
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { business, telHref, fullAddress } from '../data/site.js';
-import { Icon } from './ui.jsx';
+import { Icon, Arrow } from './ui.jsx';
 
 const nav = [
-  { to: '/halifax-airport-taxi/', label: 'Airport Taxi' },
+  { to: '/halifax-airport-taxi/', label: 'Airport' },
   { to: '/schedule/', label: 'Prices' },
-  { to: '/parkfly/', label: 'Park & Fly' },
   { to: '/tour/', label: 'Tours' },
   {
     label: 'Services',
     children: [
-      { to: '/halifax-limo-service/', label: 'Limo service' },
-      { to: '/airport-shuttle-halifax/', label: 'Airport shuttle & group fares' },
-      { to: '/corporate-hotel-transportation/', label: 'Corporate & hotels' },
-      { to: '/services-rates/', label: 'Airport rates by area' },
-      { to: '/truck-container-parking/', label: 'Truck & container parking' },
-      { to: '/slim-jim/', label: 'Car lockout & battery boost' },
-      { to: '/service-areas/', label: 'Service areas' },
+      { to: '/halifax-limo-service/', label: 'Limo service', note: 'Escalade, Suburban, Lincoln' },
+      { to: '/airport-shuttle-halifax/', label: 'Airport shuttle', note: 'Group fares from $20' },
+      { to: '/corporate-hotel-transportation/', label: 'Corporate & hotels', note: 'Billed accounts' },
+      { to: '/services-rates/', label: 'Airport rates by area', note: 'Flat fares to YHZ' },
+      { to: '/slim-jim/', label: 'Lockout & battery boost', note: 'From $85, 24/7' },
+      { to: '/service-areas/', label: 'Service areas', note: 'All of Nova Scotia' },
     ],
   },
   { to: '/contact/', label: 'Contact' },
@@ -24,66 +23,87 @@ const nav = [
 
 function Logo() {
   return (
-    <Link to="/" className="flex items-center" aria-label="48Taxi & Limo home">
+    <Link to="/" className="relative z-10 flex items-center" aria-label="48Taxi & Limo home">
       <picture>
         <source type="image/webp" srcSet="/images/logo-48taxi-282.webp" />
-        <img src="/images/logo-48taxi-282.png" alt="48Taxi & Limo" width="141" height="50" className="h-10 w-auto sm:h-11" />
+        <img src="/images/logo-48taxi-282.png" alt="48Taxi & Limo" width="141" height="50" className="h-9 w-auto sm:h-10" />
       </picture>
     </Link>
   );
 }
 
 const linkCls = ({ isActive }) =>
-  `rounded-md px-3 py-2 text-[15px] font-medium no-underline ${isActive ? 'text-brand-700' : 'text-ink hover:text-brand-700'}`;
+  `group relative px-3.5 py-2 text-[14px] font-medium no-underline transition-colors ${isActive ? 'text-white' : 'text-ink-2 hover:text-white'}`;
+const Underline = () => <span aria-hidden="true" className="absolute inset-x-3.5 bottom-1 h-px origin-left scale-x-0 bg-brand-700 transition-transform duration-300 group-hover:scale-x-100 group-aria-[current=page]:scale-x-100" />;
 
 export function Header() {
   const { pathname } = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 24);
+    on();
+    window.addEventListener('scroll', on, { passive: true });
+    return () => window.removeEventListener('scroll', on);
+  }, []);
+  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => { document.documentElement.style.overflow = open ? 'hidden' : ''; }, [open]);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded focus:bg-card focus:px-3 focus:py-2">Skip to content</a>
-      <div className="wrap flex h-16 items-center justify-between gap-4 sm:h-[72px]">
+    <header className={`fixed inset-x-0 top-0 z-50 transition-[background,border-color,backdrop-filter] duration-500 ${scrolled || open ? 'border-b border-white/[0.07] bg-paper/75 backdrop-blur-xl' : 'border-b border-transparent bg-gradient-to-b from-black/40 to-transparent'}`}>
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded focus:bg-paper focus:px-3 focus:py-2">Skip to content</a>
+      <div className="wrap flex h-[72px] items-center justify-between gap-4 sm:h-[84px]">
         <Logo />
         <nav aria-label="Main" className="hidden items-center lg:flex">
           {nav.map((n) =>
             n.children ? (
-              <div key={n.label} className="group relative">
-                <button type="button" className="flex items-center gap-1 rounded-md px-3 py-2 text-[15px] font-medium text-ink hover:text-brand-700" aria-haspopup="true">
-                  {n.label} <span aria-hidden="true" className="text-xs">▾</span>
+              <div key={n.label} className="group/dd relative">
+                <button type="button" className="flex items-center gap-1.5 px-3.5 py-2 text-[14px] font-medium text-ink-2 transition-colors hover:text-white" aria-haspopup="true">
+                  {n.label} <span aria-hidden="true" className="text-[10px] transition-transform duration-300 group-hover/dd:rotate-180">▼</span>
                 </button>
-                <div className="invisible absolute left-0 top-full w-72 translate-y-1 rounded-xl border border-line bg-card p-2 opacity-0 shadow-lg transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                  {n.children.map((c) => (
-                    <NavLink key={c.to} to={c.to} className="block rounded-lg px-3 py-2 text-[15px] text-ink no-underline hover:bg-band hover:text-brand-700">{c.label}</NavLink>
-                  ))}
+                <div className="invisible absolute left-1/2 top-full w-[560px] -translate-x-1/2 translate-y-3 pt-3 opacity-0 transition-all duration-300 group-focus-within/dd:visible group-focus-within/dd:translate-y-0 group-focus-within/dd:opacity-100 group-hover/dd:visible group-hover/dd:translate-y-0 group-hover/dd:opacity-100">
+                  <div className="glass grid grid-cols-2 gap-1 rounded-2xl bg-paper/90 p-3">
+                    {n.children.map((c) => (
+                      <NavLink key={c.to} to={c.to} className="group/i rounded-xl px-4 py-3 no-underline transition-colors hover:bg-white/[0.06]">
+                        <span className="flex items-center justify-between text-[15px] font-medium text-white">{c.label}<Icon name="arrowUpRight" className="h-3.5 w-3.5 text-brand-700 opacity-0 transition-opacity group-hover/i:opacity-100" /></span>
+                        <span className="mt-0.5 block text-[13px] text-ink-3">{c.note}</span>
+                      </NavLink>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : (
-              <NavLink key={n.to} to={n.to} className={linkCls}>{n.label}</NavLink>
+              <NavLink key={n.to} to={n.to} className={linkCls}>{n.label}<Underline /></NavLink>
             ),
           )}
         </nav>
-        <div className="flex items-center gap-2">
-          <a href={telHref} className="hidden items-center gap-2 px-2 text-[15px] font-semibold text-ink no-underline hover:text-brand-700 md:flex">
-            <Icon name="phone" className="h-4 w-4" /> {business.phone.display}
+        <div className="relative z-10 flex items-center gap-2 sm:gap-3">
+          <a href={telHref} className="hidden items-center gap-2 text-[14px] font-semibold text-white no-underline hover:text-brand-700 xl:flex">
+            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" /><span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" /></span>
+            {business.phone.display}
           </a>
-          <Link to="/book-now/" className="btn-primary hidden min-h-[40px] px-4 sm:inline-flex">Book a ride</Link>
-          {/* Mobile menu: <details> works before JavaScript loads. `key` closes it on navigation. */}
-          <details key={pathname} className="relative lg:hidden">
-            <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-lg border border-line [&::-webkit-details-marker]:hidden" aria-label="Open menu">
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-            </summary>
-            <div className="fixed inset-x-0 top-16 max-h-[calc(100vh-4rem)] overflow-y-auto border-b border-line bg-card px-4 pb-6 pt-2 shadow-lg">
-              <nav aria-label="Mobile">
-                {nav.flatMap((n) => (n.children ? n.children : [n])).map((n) => (
-                  <Link key={n.to} to={n.to} className="block border-b border-line py-3 text-[16px] font-medium text-ink no-underline">{n.label}</Link>
-                ))}
-                <Link to="/about/" className="block border-b border-line py-3 text-[16px] font-medium text-ink no-underline">About</Link>
-              </nav>
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <Link to="/book-now/" className="btn-primary">Book a ride</Link>
-                <a href={telHref} className="btn-ghost"><Icon name="phone" className="h-4 w-4" /> Call</a>
-              </div>
-            </div>
-          </details>
+          <Link to="/book-now/" className="btn-primary hidden min-h-[42px] px-5 text-[14px] sm:inline-flex">Book a ride <Arrow /></Link>
+          <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? 'Close menu' : 'Open menu'} className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 lg:hidden">
+            <span className="relative block h-3 w-5">
+              <span className={`absolute left-0 h-px w-5 bg-white transition-all duration-300 ${open ? 'top-1.5 rotate-45' : 'top-0'}`} />
+              <span className={`absolute left-0 h-px w-5 bg-white transition-all duration-300 ${open ? 'top-1.5 -rotate-45' : 'top-3'}`} />
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu: full-screen overlay with large serif links */}
+      <div id="mobile-menu" className={`fixed inset-0 top-[72px] h-[calc(100dvh-72px)] overflow-y-auto bg-paper px-6 pb-10 pt-6 transition-all duration-500 lg:hidden ${open ? 'visible opacity-100' : 'invisible opacity-0'}`}>
+        <nav aria-label="Mobile">
+          {[...nav.filter((n) => !n.children), ...nav.find((n) => n.children).children, { to: '/about/', label: 'About' }].map((n, i) => (
+            <Link key={n.to} to={n.to} className="display flex items-center justify-between border-b border-white/[0.08] py-4 text-[2rem] text-white no-underline transition-all duration-500" style={{ transitionDelay: open ? `${80 + i * 35}ms` : '0ms', transform: open ? 'none' : 'translateY(14px)', opacity: open ? 1 : 0 }}>
+              {n.label}<Icon name="arrowUpRight" className="h-5 w-5 text-brand-700" />
+            </Link>
+          ))}
+        </nav>
+        <div className="mt-8 grid grid-cols-2 gap-3">
+          <Link to="/book-now/" className="btn-primary">Book <Arrow /></Link>
+          <a href={telHref} className="btn-ghost"><Icon name="phone" className="h-4 w-4" /> Call 24/7</a>
         </div>
       </div>
     </header>
@@ -101,8 +121,8 @@ const footerCols = [
   {
     title: 'Prices & info',
     links: [
-      ['/schedule/', 'Prices & fare estimator'], ['/services-rates/', 'Airport rates by area'], ['/gti/', 'YHZ pickup instructions'], ['/parkfly/', 'Park & Fly'],
-      ['/truck-container-parking/', 'Truck & container parking'], ['/slim-jim/', 'Car lockout & battery boost'], ['/faq/', 'FAQ'],
+      ['/schedule/', 'Prices & fare estimator'], ['/services-rates/', 'Airport rates by area'], ['/gti/', 'YHZ pickup instructions'],
+      ['/slim-jim/', 'Car lockout & battery boost'], ['/faq/', 'FAQ'],
     ],
   },
   {
@@ -123,38 +143,39 @@ const footerCols = [
 
 export function Footer() {
   return (
-    <footer className="bg-night text-gray-300">
-      <div className="wrap grid gap-10 py-14 lg:grid-cols-[1.3fr_repeat(4,1fr)]">
+    <footer className="relative overflow-hidden border-t border-white/[0.06] bg-night text-ink-2">
+      <div className="wrap grid gap-12 pb-12 pt-20 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
         <div>
-          <p className="text-lg font-bold text-white">{business.name}</p>
-          <p className="mt-2 text-sm">Locally owned taxi, limo and airport transfer service in Halifax, Nova Scotia.</p>
-          <address className="mt-5 space-y-2 text-sm not-italic">
-            <a href={telHref} className="flex items-center gap-2 font-semibold text-white no-underline hover:text-white"><Icon name="phone" className="h-4 w-4" />{business.phone.display}</a>
-            <a href={`tel:${business.phone2.tel}`} className="block pl-6 text-gray-300 no-underline hover:text-white">{business.phone2.display}</a>
-            <a href={`tel:${business.tollFree.tel}`} className="block pl-6 text-gray-300 no-underline hover:text-white">Toll free {business.tollFree.display}</a>
-            <a href={`mailto:${business.email}`} className="flex items-center gap-2 text-gray-300 no-underline hover:text-white"><Icon name="mail" className="h-4 w-4" />{business.email}</a>
-            <span className="flex items-start gap-2"><Icon name="pin" className="mt-0.5 h-4 w-4 flex-none" />{fullAddress}</span>
-            <span className="flex items-center gap-2"><Icon name="clock" className="h-4 w-4" />{business.hours}</span>
+          <p className="display text-4xl text-white">Comfort. Reliability. <em>48 Taxi.</em></p>
+          <address className="mt-8 space-y-3 text-[15px] not-italic">
+            <a href={telHref} className="flex items-center gap-3 text-xl font-semibold text-white no-underline hover:text-brand-700"><Icon name="phone" className="h-5 w-5 text-brand-700" />{business.phone.display}</a>
+            <p className="pl-8 text-sm"><a href={`tel:${business.phone2.tel}`} className="text-ink-2 no-underline hover:text-white">{business.phone2.display}</a> · <a href={`tel:${business.tollFree.tel}`} className="text-ink-2 no-underline hover:text-white">{business.tollFree.display}</a></p>
+            <a href={`mailto:${business.email}`} className="flex items-center gap-3 text-ink-2 no-underline hover:text-white"><Icon name="mail" className="h-5 w-5 text-brand-700" />{business.email}</a>
+            <span className="flex items-start gap-3"><Icon name="pin" className="mt-0.5 h-5 w-5 flex-none text-brand-700" />{fullAddress}</span>
+            <span className="flex items-center gap-3"><Icon name="clock" className="h-5 w-5 text-brand-700" />{business.hours}</span>
           </address>
-          <ul className="mt-5 flex gap-4 text-sm">
-            <li><a href={business.social.facebook} rel="noopener" target="_blank" className="text-gray-300 hover:text-white">Facebook</a></li>
-            <li><a href={business.social.instagram} rel="noopener" target="_blank" className="text-gray-300 hover:text-white">Instagram</a></li>
-            <li><a href={business.social.tiktok} rel="noopener" target="_blank" className="text-gray-300 hover:text-white">TikTok</a></li>
+          <ul className="mt-8 flex gap-2 text-sm">
+            {[['Facebook', business.social.facebook], ['Instagram', business.social.instagram], ['TikTok', business.social.tiktok]].map(([l, h]) => (
+              <li key={l}><a href={h} rel="noopener" target="_blank" className="chip no-underline hover:border-brand-700 hover:text-white">{l}</a></li>
+            ))}
           </ul>
         </div>
         {footerCols.map((c) => (
           <div key={c.title}>
-            <p className="text-sm font-semibold uppercase tracking-wide text-white">{c.title}</p>
-            <ul className="mt-4 space-y-2.5 text-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-sand">{c.title}</p>
+            <ul className="mt-5 space-y-3 text-[14px]">
               {c.links.map(([to, label]) => (
-                <li key={to}><Link to={to} className="text-gray-300 no-underline hover:text-white">{label}</Link></li>
+                <li key={to}><Link to={to} className="text-ink-2 no-underline transition-colors hover:text-white">{label}</Link></li>
               ))}
             </ul>
           </div>
         ))}
       </div>
-      <div className="border-t border-white/10">
-        <div className="wrap flex flex-col gap-2 py-5 text-xs text-gray-400 sm:flex-row sm:justify-between">
+      <div aria-hidden="true" className="wrap select-none overflow-hidden">
+        <div className="display translate-y-[18%] whitespace-nowrap text-center text-[22vw] leading-none text-white/[0.05] after:content-['Ride_with_48.'] lg:text-[17rem]" />
+      </div>
+      <div className="border-t border-white/[0.06]">
+        <div className="wrap flex flex-col gap-2 py-6 text-xs text-ink-3 sm:flex-row sm:justify-between">
           <p>© {new Date().getFullYear()} {business.legalName}. All rights reserved.</p>
           <p>Halifax, Nova Scotia · Serving all of Nova Scotia, New Brunswick and PEI</p>
         </div>
@@ -166,9 +187,9 @@ export function Footer() {
 /** Sticky call/book bar on phones: most taxi bookings start on mobile. */
 export function MobileActionBar() {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 gap-2 border-t border-line bg-card p-2 sm:hidden">
-      <a href={telHref} className="btn-ghost min-h-[46px]"><Icon name="phone" className="h-4 w-4" /> Call 24/7</a>
-      <Link to="/book-now/" className="btn-primary min-h-[46px]">Book a ride</Link>
+    <div className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-2 gap-2 rounded-full border border-white/10 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl sm:hidden">
+      <a href={telHref} className="btn min-h-[44px] text-ink"><Icon name="phone" className="h-4 w-4" /> Call 24/7</a>
+      <Link to="/book-now/" className="btn-primary min-h-[44px]">Book a ride</Link>
     </div>
   );
 }

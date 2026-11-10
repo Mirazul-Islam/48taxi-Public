@@ -42,6 +42,15 @@ export default function BookingForm() {
     if (pkg && tours.some((t) => t.slug === pkg)) f.put('tourPackage', pkg);
     const dir = q.get('direction');
     if (dir === 'from' || dir === 'to') f.put('airportDirection', dir);
+    // Values handed over from the homepage booking bar.
+    const pickup = q.get('pickup');
+    const dropoff = q.get('dropoff');
+    const isYhz = (s) => /yhz|stanfield|airport/i.test(s || '');
+    if (s === 'airport' && !dir) f.put('airportDirection', isYhz(pickup) ? 'from' : 'to');
+    if (pickup && !(s === 'airport' && isYhz(pickup))) f.put('pickupAddress', pickup);
+    if (dropoff && !(s === 'airport' && isYhz(dropoff))) f.put(s === 'hourly' ? 'notes' : 'dropoffAddress', dropoff);
+    if (q.get('date')) f.put('pickupDate', q.get('date'));
+    if (q.get('time')) f.put('pickupTime', q.get('time'));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

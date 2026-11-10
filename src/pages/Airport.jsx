@@ -83,9 +83,6 @@ export function AirportTaxi() {
         <ul className="flex flex-wrap gap-2">{vehicles.map((v) => <li key={v.model} className="chip text-[13px]">{v.model} · {v.cls}</li>)}</ul>
         <p className="mt-3 text-sm text-ink-3">Vehicle selection depends on availability.</p>
       </Section>
-      <Section title="Parking at the airport? Try Park & Fly" tight>
-        <p className="max-w-3xl text-ink-2">Park at our gated Sackville yard for $1 a day and ride to YHZ for a flat $48 plus tax each way. A week away costs about $103 including both rides. <Link to="/parkfly/">See Park &amp; Fly →</Link></p>
-      </Section>
       <Reviews only={['Tom Howard', 'barb c', 'Dania Dabbas']} title="Recent airport rides" />
       <Faq items={faqsFor(path)} />
       <CtaBand title="Flying soon? Lock in your airport fare." />
@@ -99,7 +96,7 @@ export function AirportShuttle() {
   return (
     <>
       <PageHero path={path} eyebrow="Halifax airport shuttle alternatives" title="Halifax airport shuttle, door to door" img="chauffeur-door" imgAlt="Chauffeur opening a car door for a passenger">
-        Skip the shuttle stops and bus schedules. Ride door to door to Halifax Stanfield with per-person group fares, a flat-rate private car, or park with us for $1 a day.
+        Skip the shuttle stops and bus schedules. Ride door to door to Halifax Stanfield with per-person group fares, a flat-rate private car, or a family SUV with room for everyone’s luggage.
       </PageHero>
       <Section title="Per-person airport fares" intro="Within our standard coverage area; additional fees apply outside it.">
         <div className="grid gap-5 md:grid-cols-3">
@@ -112,7 +109,7 @@ export function AirportShuttle() {
         <div className="grid gap-5 md:grid-cols-3">
           {[
             ['Private airport taxi', 'Flat fares from $60 from Halifax, Dartmouth, Bedford and Sackville. Your car, your schedule.', '/halifax-airport-taxi/', 'Airport taxi fares'],
-            ['Park & Fly', '$1/day parking in Sackville plus a flat $48 ride each way. A 7-day trip is about $103 all in.', '/parkfly/', 'Park & Fly'],
+            ['Return trips', 'Book both ways at once: we reverse your addresses and track your return flight too.', '/book-now/?service=airport', 'Book a return trip'],
             ['Group & family rides', 'Suburbans and minivans for 6–7 passengers with luggage. Up to 20% off outside HRM for groups.', '/book-now/?service=airport', 'Book a group ride'],
           ].map(([t, d, to, l]) => (
             <div key={t} className="card flex flex-col"><h3 className="text-lg font-semibold">{t}</h3><p className="mt-2 flex-1 text-ink-2">{d}</p><Link to={to} className="mt-4 font-semibold">{l} →</Link></div>

@@ -1,7 +1,7 @@
 // Post-build SEO guard. Run `npm run check` after `npm run build`; it exits non-zero on problems.
 // Checks every pre-rendered page for: exactly one <title>, meta description, canonical and <h1>;
 // title/description length; canonical = page URL; valid JSON-LD; internal links that resolve;
-// all 16 URLs from the old WordPress site still present; image alt text; form field registry.
+// all old WordPress URLs present (or 301-redirected if retired); image alt text; form field registry.
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +9,9 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
 const SITE = 'https://48taxi.co';
-const LEGACY = ['/', '/about/', '/affiliate/', '/book-now/', '/careers/', '/contact/', '/gti/', '/parkfly/', '/privacy-policy/', '/refund-policy/', '/return-policy-cancellation-policy/', '/schedule/', '/services-rates/', '/slim-jim/', '/tour/', '/truck-container-parking/'];
+const LEGACY = ['/', '/about/', '/affiliate/', '/book-now/', '/careers/', '/contact/', '/gti/', '/privacy-policy/', '/refund-policy/', '/return-policy-cancellation-policy/', '/schedule/', '/services-rates/', '/slim-jim/', '/tour/'];
+// Retired on purpose; must stay as 301 redirects so their links and rankings pass on.
+const RETIRED = { '/parkfly/': '/halifax-airport-taxi/', '/truck-container-parking/': '/' };
 
 const files = [];
 const walk = (d) => readdirSync(d).forEach((f) => { const p = join(d, f); statSync(p).isDirectory() ? walk(p) : p.endsWith('index.html') && files.push(p); });
@@ -56,6 +58,11 @@ for (const f of files) {
   }
 }
 for (const l of LEGACY) if (!urls.has(l)) errors.push(`legacy URL missing: ${l}`);
+const toml = readFileSync(join(root, 'netlify.toml'), 'utf8');
+for (const [from, to] of Object.entries(RETIRED)) {
+  if (urls.has(from)) errors.push(`retired URL ${from} should not be built`);
+  if (!new RegExp(`from = "${from}\\*"\\s+to = "${to}"\\s+status = 301`).test(toml)) errors.push(`netlify.toml needs a 301 from ${from}* to ${to}`);
+}
 for (const f of ['404.html', 'sitemap.xml', 'robots.txt', '__forms.html']) if (!existsSync(join(dist, f))) errors.push(`missing ${f}`);
 const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8');
 for (const u of urls) if (!sitemap.includes(`<loc>${SITE}${u}</loc>`)) errors.push(`sitemap missing ${u}`);

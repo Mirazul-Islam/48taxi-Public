@@ -2,11 +2,13 @@
 
 The rebuilt **48taxi.co**: React, pre-rendered to static HTML for SEO, hosted on Netlify with
 Netlify Forms and Netlify Functions. Colours follow the current site (espresso brown, cream
-text, amber `#FD9800` accents, orange `#F85A00` logo).
+text, amber `#FD9800` accents, orange `#F85A00` logo), with an editorial premium design:
+Instrument Serif display type, film grain, glass surfaces, scroll reveals, image wipes,
+count-up stats, marquees and smooth scrolling (all motion respects reduced-motion settings).
 
 | Lighthouse (lab, mobile) | Old WordPress site | This site |
 |---|---|---|
-| Performance | 58 | 97–99 |
+| Performance | 58 | 94–96 (desktop 100) |
 | Accessibility | 87 | 100 |
 | Best practices | 96 | 100 |
 | SEO | 92 | 100 |
@@ -15,12 +17,13 @@ text, amber `#FD9800` accents, orange `#F85A00` logo).
 
 ## What's inside
 
-- **All 16 existing URLs kept exactly** (`/book-now/`, `/parkfly/`, `/schedule/`, `/gti/`, `/slim-jim/`, …), so rankings and backlinks carry over with no redirects.
+- **Existing URLs kept exactly** (`/book-now/`, `/schedule/`, `/gti/`, `/slim-jim/`, …), so rankings and backlinks carry over.
+- **Retired services:** Park & Fly and truck/container parking were removed. `/parkfly/` 301-redirects to `/halifax-airport-taxi/` and `/truck-container-parking/` to `/`; the build fails if those redirects are ever removed.
 - **11 new keyword pages:** `/halifax-airport-taxi/`, `/halifax-limo-service/`, `/airport-shuttle-halifax/`, `/service-areas/` (+ Dartmouth, Bedford, Truro, Wolfville), `/tour/peggys-cove/`, `/corporate-hotel-transportation/`, `/faq/`.
 - **One clean set of SEO tags per page** (the old site printed two of everything): title, description, canonical, robots, Open Graph, plus JSON-LD for `LocalBusiness`, `WebSite`, `WebPage`, `BreadcrumbList`, `TaxiService` and `FAQPage`.
 - `sitemap.xml`, `robots.txt` and a `noindex` 404 page are generated at build time.
 - 301 redirects in `netlify.toml` for WordPress leftovers (`/feed/`, `/wp-content/…`, old fare PDFs, `/sitemap.rss`, …) and friendly aliases (`/prices/`, `/tours/`, `/park-and-fly/` …).
-- **Forms** (booking, Park & Fly, truck parking quote and agreement, lockout, contact, affiliate) are stored by Netlify Forms, with a honeypot to filter spam.
+- **Forms** (booking, lockout, contact, affiliate) are stored by Netlify Forms, with a honeypot to filter spam.
 - **Functions:**
   - `fare-estimate` uses the Google Routes API when a key is set. Without a key, the site falls back to the published flat airport fares by area.
   - `submission-created` can email each form submission through Resend.
@@ -53,7 +56,7 @@ npm run preview    # serves dist/ like Netlify (gzip, pretty URLs, 404) on :4173
 ## Launch-day SEO checklist
 
 - [ ] In WordPress, note any pages that aren't in the sitemap (drafts, landing pages). Add a redirect for each one in `netlify.toml`.
-- [ ] Switch DNS. Then in Google Search Console, submit `https://48taxi.co/sitemap.xml` and use URL Inspection → Request indexing on `/`, `/halifax-airport-taxi/`, `/schedule/` and `/parkfly/`.
+- [ ] Switch DNS. Then in Google Search Console, submit `https://48taxi.co/sitemap.xml` and use URL Inspection → Request indexing on `/`, `/halifax-airport-taxi/`, `/schedule/` and `/tour/`.
 - [ ] Check that `https://www.48taxi.co/` and `http://48taxi.co/` both 301 to `https://48taxi.co/`.
 - [ ] Update Google Business Profile: website URL, hours (24/7), category "Taxi service", address and phone matching the footer.
 - [ ] Keep WordPress available (not deleted) for 30 days in case anything was missed.
@@ -71,8 +74,10 @@ These are taken from the current site, but they conflict or are unclear:
 6. **Three airport fare tables disagree** (Services & Rates vs the Prices tabs, for example Halifax $60+ vs $59.75 vs $63). All three are kept as they were. Pick one and the others can be removed.
 7. **Hotel list** on the homepage and Corporate page: confirm each is a current partner.
 8. **Refund policy contact** lists `48taxii@gmail.com`; everywhere else uses `info@48taxi.co`.
-9. **Truck agreement** listed `info@48taxi.com`; this was corrected to `info@48taxi.co`.
-10. **Careers:** "Application deadline: May 1" has no year.
+9. **Address:** the footer and schema still use 344 Sackville Drive (the former Park & Fly yard). Confirm the business address to show now that Park & Fly is gone.
+10. **Privacy policy** still has a section on the Park & Fly lot cameras; remove it if the lot is no longer used.
+11. **Fleet capacities** on the homepage (sedan 3, mid-size SUV 5, full-size SUV 6, minivan 6) and real fleet photos.
+12. **Careers:** "Application deadline: May 1" has no year.
 
 ## Project layout
 

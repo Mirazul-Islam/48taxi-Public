@@ -11,12 +11,6 @@ export const FORMS = {
     'vehicle', 'passengers', 'luggage', 'meetGreet', 'childSeats', 'wakeUpCall', 'assistBags', 'requestType',
     'estimate', 'notes', 'coupon', 'agreeTerms',
   ],
-  'park-fly': [
-    'name', 'phone', 'email', 'dropoffDate', 'dropoffTime', 'pickupDate', 'pickupTime', 'departingFlight', 'returningFlight',
-    'plate', 'make', 'model', 'colour', 'vehicleType', 'rides', 'passengers', 'bags', 'addons', 'estimate', 'notes',
-  ],
-  'truck-parking-quote': ['name', 'company', 'email', 'phone', 'lookingFor', 'unitType', 'units', 'duration', 'startDate', 'otherDetails', 'details', 'consent'],
-  'truck-parking-agreement': ['clientName', 'company', 'email', 'phone', 'units', 'plates', 'startDate', 'signature', 'signedDate', 'agree'],
   lockout: ['firstName', 'lastName', 'email', 'phone', 'service', 'address', 'vehicleLocation', 'vehicleModel', 'colour', 'year', 'plate', 'agree'],
   contact: ['name', 'email', 'phone', 'message'],
   affiliate: ['company', 'phone', 'tollFree', 'fax', 'mailingAddress', 'suite', 'city', 'province', 'postalCode', 'website', 'email', 'contactPerson', 'yearsInBusiness'],

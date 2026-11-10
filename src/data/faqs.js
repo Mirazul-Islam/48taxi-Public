@@ -12,15 +12,6 @@ const airport = [
 
 export const faqs = {
   '/halifax-airport-taxi/': airport,
-  '/parkfly/': [
-    ['Do I need to book ahead?', 'No. There is no contract and no reservation minimum, so you can drive by today. Sending the form ahead of time just means we have your plate and flight on file and a driver ready at the gate.'],
-    ['Is $1 a day the rate for every vehicle?', 'It is the rate for a standard car or SUV in one spot. Pickup trucks, vans, trailers and oversized vehicles need more room, so they are priced above the standard daily rate. Tell us what you drive and we will quote it before you commit.'],
-    ['How do I get back to my car after I land?', 'Call (902) 789-7777 when you land and we bring you back to the lot. The yard is accessible 24 hours a day, so a late arrival is not a problem.'],
-    ['What if my flight is delayed or my trip runs long?', 'Nothing breaks. Parking is charged on the actual days your car is with us, and if you give us your return flight number we track it and adjust your pickup.'],
-    ['Can you clean my car while I am away?', 'Yes. Exterior wash, interior cleaning and full detailing can all be added to your booking. In winter we can also clear snow and start the car so it is warm when you arrive.'],
-    ['Is the lot secure?', 'It is a private, fully fenced yard with a controlled access gate and security cameras running around the clock. It is not a public lot.'],
-    ['How far is the lot from Halifax Stanfield?', 'About 25 km, roughly 20 minutes by road via Highway 102 and Exit 6.'],
-  ],
   '/halifax-limo-service/': [
     ['How much is a limo in Halifax?', 'Hourly chauffeured service starts at $70 per hour in a sedan and $95 per hour in an SUV. Airport limo transfers use our flat airport fares, from $75 in an SUV from the Halifax Peninsula. Groups travelling outside HRM can save up to 20%.'],
     ['What vehicles do you have?', 'Executive sedans (Lincoln MKS, Toyota Camry), mid-size SUVs (Lincoln MKX, Toyota Highlander), full-size SUVs (Cadillac Escalade, Chevy Suburban) and minivans (Honda Odyssey, Dodge Caravan). Vehicle selection depends on availability.'],
@@ -28,7 +19,7 @@ export const faqs = {
     ['Is gratuity included?', 'Gratuity is not included. A minimum 15% gratuity surcharge applies to prepaid and billed reservations.'],
   ],
   '/airport-shuttle-halifax/': [
-    ['Is there a cheaper alternative to a private taxi to YHZ?', 'Yes. Groups of three or more ride for $20 per person and pairs for $30 per person within the standard coverage area, paid in cash in the car. Park & Fly in Sackville is $1 a day plus a flat $48 ride.'],
+    ['Is there a cheaper alternative to a private taxi to YHZ?', 'Yes. Groups of three or more ride for $20 per person and pairs for $30 per person within the standard coverage area, paid in cash in the car.'],
     ['Is this a shared shuttle with other passengers?', 'We typically provide private transportation. In rare cases, and only when operationally needed, passengers departing from the same area may share a ride.'],
     ['Can you take a large group with luggage?', 'Yes. Chevy Suburbans and minivans carry 6–7 passengers with luggage. For larger groups we send more than one vehicle.'],
   ],

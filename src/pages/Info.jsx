@@ -48,7 +48,7 @@ export function About() {
       </Section>
       <Section title="What we do" className="bg-band">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[['/halifax-airport-taxi/', 'Airport transfers'], ['/halifax-limo-service/', 'Limo & chauffeur service'], ['/tour/', 'Nova Scotia tours'], ['/parkfly/', 'Park & Fly'], ['/truck-container-parking/', 'Truck & container parking'], ['/slim-jim/', 'Lockout & battery boost']].map(([to, l]) => <Link key={to} to={to} className="card font-semibold no-underline hover:shadow-md">{l} →</Link>)}
+          {[['/halifax-airport-taxi/', 'Airport transfers'], ['/halifax-limo-service/', 'Limo & chauffeur service'], ['/tour/', 'Nova Scotia tours'], ['/schedule/', 'Prices & fare estimator'], ['/service-areas/', 'Service areas'], ['/slim-jim/', 'Lockout & battery boost']].map(([to, l]) => <Link key={to} to={to} className="card font-semibold no-underline hover:shadow-md">{l} →</Link>)}
         </div>
       </Section>
       <CtaBand title="Ride with us" text="Take your travel experience to the next level." />
