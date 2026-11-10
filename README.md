@@ -25,7 +25,7 @@ count-up stats, marquees and smooth scrolling (all motion respects reduced-motio
 - 301 redirects in `netlify.toml` for WordPress leftovers (`/feed/`, `/wp-content/…`, old fare PDFs, `/sitemap.rss`, …) and friendly aliases (`/prices/`, `/tours/`, `/park-and-fly/` …).
 - **Forms** (booking, contact, affiliate) are stored by Netlify Forms, with a honeypot to filter spam.
 - **Functions:**
-  - `fare-estimate` gets the driving distance from the Google Routes API when a key is set. Without a key, riders can type the distance in the estimator, and the booking form shows a "from" price that the team confirms.
+  - Fares are calculated in the browser: Google address suggestions plus Google's driving distance (`src/lib/maps.js`), priced with `src/lib/pricing.js`. `fare-estimate` is only a backup that uses a server key if one is set. Without any key, customers type addresses (or the distance) and the booking form shows a "from" price that the team confirms.
   - `submission-created` can email each form submission through Resend.
 
 ## Homepage door scene (scroll animation)
@@ -57,6 +57,40 @@ npm run frames -- path/to/clip.mp4 --frames 120 --focus 0.6
 
 Visitors with "reduce motion" turned on see a still photo with the call to action instead.
 
+## Vehicle, luggage and seat pictures (license before going public)
+
+The booking form and the homepage fleet use cut-out pictures (transparent backgrounds) in `public/images/car-*` and `public/images/item-*`. For this demo they were copied from the same sources the current 48taxi.co booking form uses. **They belong to those sites, so get permission or licensed replacements before the site goes public.** Model years follow the current site.
+
+| Picture | Source |
+|---|---|
+| Toyota Corolla | fastly.clutch.ca |
+| Toyota Highlander (2024) | d2pcy90fy06bo7.cloudfront.net (dealer, London ON) |
+| Lincoln MKX | platform.cstatic-images.com (Cars.com stock photo) |
+| Dodge Grand Caravan (2020) | di-shared-assets.dealerinspire.com |
+| Cadillac Escalade (2019) | content-images.carmax.com (Evox stock image) |
+| Personal item | media.tatacroma.com |
+| Small carry-on | ca.beistravel.com |
+| Check-in (medium) | ca.monos.com |
+| Sports / oversize case | winter-guncases.com |
+| Pet carrier (dog) | petsdomain.com.au |
+| Pet carrier (cat) | i5.walmartimages.com |
+| Golf bag | sundaygolf.com |
+| Stroller | bambinofurniture.com |
+| Highback booster | ellaandelliot.com |
+| Infant car seat | maxicosi.com |
+
+Still missing (a simple line drawing shows instead): **2024 Toyota Camry, 2009 Lincoln MKS, 2018 Honda Odyssey, 2018 Chevy Suburban** (the current site's JD Power images refuse downloads), plus the large check-in suitcase, garment case and backless booster. The homepage fleet only shows cars that have a picture. To add one, drop a transparent PNG in and run:
+
+```bash
+node scripts/add-cutout.mjs path/to/2024-camry.png car-camry
+```
+
+(names: `car-corolla`, `car-camry`, `car-mks`, `car-highlander`, `car-mkx`, `car-caravan`, `car-odyssey`, `car-suburban`, `car-escalade`, `item-checkedLarge`, `item-garment`, `item-backless`, …)
+
+## WhatsApp
+
+WhatsApp uses the main number, (902) 789-7777 (`whatsappHref` in `src/data/site.js`), and opens a chat with a ready-made "I'd like to book a ride" message. It appears in the header, the phone action bar, the mobile menu, the hero, every call-to-action banner, the contact page, the footer and the booking confirmation. Make sure WhatsApp (ideally WhatsApp Business) is set up on that number.
+
 ## Run it locally
 
 ```bash
@@ -76,7 +110,8 @@ npm run preview    # serves dist/ like Netlify (gzip, pretty URLs, 404) on :4173
 
    | Variable | Purpose |
    |---|---|
-   | `GOOGLE_MAPS_API_KEY` | **Needed for automatic prices.** Measures the driving distance so the booking form and estimator show the exact fare. Enable the Routes API, and restrict the key to that API. |
+   | `VITE_GOOGLE_MAPS_KEY` | **Needed for automatic prices.** The Google Maps browser key (the same one the WordPress booking form uses). It powers address suggestions and the distance-based fare in the booking form, the fare calculator and the homepage search. In Google Cloud, enable Maps JavaScript API, Places API, Distance Matrix API and Directions API, and add this site's domains (e.g. `48taxi.co/*`, `*.netlify.app/*`) to the key's website restrictions. Redeploy after adding it. |
+   | `GOOGLE_MAPS_API_KEY` | Optional backup: a server key restricted to the Routes API, used only if the browser lookup fails. |
    | `RESEND_API_KEY`, `NOTIFY_EMAIL`, `FROM_EMAIL` | Email every submission to your inbox via Resend. `FROM_EMAIL` must be on a domain you verified in Resend. |
    | `SEND_CONFIRMATION=true` | Also email the customer a copy. |
 4. Test on the `*.netlify.app` URL first: book a test ride and check it appears under Forms.
@@ -99,7 +134,7 @@ These are taken from the current site, but they conflict or are unclear:
 2. **Hours:** the site says 24/7, but the old schema said Mon–Sun 09:00–17:00. This build uses **24/7**.
 3. **Main phone:** (902) 789-7777 is primary, with (902) 488-8882 and 1 (866) 482-9090 shown as secondary numbers.
 4. **Pricing** follows the November 2026 pricing guide and lives in one file, `src/lib/pricing.js`: the higher of $48 or $2/km plus the vehicle surcharge, extras, and waiting time. The old flat fare tables (by area, by zone, and long distance) were removed. Not covered by the guide, so kept as they were: hourly rates ($70 sedan / $95 SUV), the 15% minimum gratuity on prepaid and billed trips, and the 20% group discount outside HRM. Taxes aren't mentioned in the guide, so the site doesn't say whether HST is included.
-5. **Per-person fares ($20 / $30 / $60, cash):** the homepage didn't say what they apply to. They're shown here as airport per-person fares.
+5. **Per-person fares** ($20 / $30 / $60) were removed: no longer offered.
 6. **Charging extras after the ride (Stripe)** from the pricing guide isn't built yet. Until it is, the booking form's consent says waiting time and extras are "added to my fare"; switch to the guide's "charged to my card on file" wording once cards are saved at booking.
 7. **Hotel list** on the homepage and Corporate page: confirm each is a current partner.
 8. **Refund policy contact** lists `48taxii@gmail.com`; everywhere else uses `info@48taxi.co`.

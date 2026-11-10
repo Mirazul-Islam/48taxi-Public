@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-// Colour scheme matched to the current 48taxi.co theme: espresso-brown backgrounds, cream text,
+// Colour scheme: rich chocolate-espresso backgrounds, cream text,
 // amber (#FD9800) buttons/accents and the orange (#F85A00) logo.
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
@@ -13,13 +13,13 @@ export default {
         ink: { DEFAULT: '#F3EEE9', 2: '#DCCFC3', 3: '#BCAEA2' },
         sand: '#D2C1AB',
         // surfaces
-        paper: '#231A18', // page background
-        band: '#301E19', // alternate section background
-        coal: '#232120', // charcoal band
-        card: '#2B201D', // cards, panels
-        chip: '#3A2C27',
-        line: '#46362F', // borders
-        night: '#1F140F', // footer and dark bands
+        paper: '#28170E', // page background (rich chocolate)
+        band: '#321E13', // alternate section background
+        coal: '#241A14', // darker band
+        card: '#352115', // cards, panels
+        chip: '#432C1E',
+        line: '#523828', // borders
+        night: '#1D1009', // footer and dark bands
         onaccent: '#141006', // text on amber buttons (AA contrast)
       },
       fontFamily: {

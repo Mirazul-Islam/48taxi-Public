@@ -221,5 +221,125 @@
   ],
   "w": 1024,
   "h": 682
+ },
+ "car-caravan": {
+  "widths": [
+   360,
+   615
+  ],
+  "w": 615,
+  "h": 341
+ },
+ "car-corolla": {
+  "widths": [
+   360,
+   720
+  ],
+  "w": 720,
+  "h": 338
+ },
+ "car-escalade": {
+  "widths": [
+   360,
+   610
+  ],
+  "w": 610,
+  "h": 365
+ },
+ "car-highlander": {
+  "widths": [
+   360,
+   720
+  ],
+  "w": 720,
+  "h": 456
+ },
+ "car-mkx": {
+  "widths": [
+   360,
+   720
+  ],
+  "w": 720,
+  "h": 393
+ },
+ "item-carryon": {
+  "widths": [
+   160,
+   224
+  ],
+  "w": 224,
+  "h": 659
+ },
+ "item-checkedMedium": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 557
+ },
+ "item-golf": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 377
+ },
+ "item-highback": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 379
+ },
+ "item-infant": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 409
+ },
+ "item-oversize": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 167
+ },
+ "item-personal": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 474
+ },
+ "item-petCat": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 288
+ },
+ "item-petDog": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 281
+ },
+ "item-stroller": {
+  "widths": [
+   160,
+   320
+  ],
+  "w": 320,
+  "h": 422
  }
 }

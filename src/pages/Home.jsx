@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Pic, Icon, Arrow, CtaBand, Ratings, BookButton, CallButton, Stars, MaskTitle } from '../components/ui.jsx';
+import { Pic, Icon, Arrow, CtaBand, Ratings, BookButton, CallButton, Stars, MaskTitle, WhatsAppIcon } from '../components/ui.jsx';
 import { popularServices, golf, hotels, reviews, tours } from '../data/content.js';
-import { perPerson, money } from '../data/fares.js';
-import { PRICING, VEHICLES, EXAMPLE_TRIPS, tripFare } from '../lib/pricing.js';
-import { business } from '../data/site.js';
+import { PRICING, VEHICLES } from '../lib/pricing.js';
+import { Cutout } from '../components/Visuals.jsx';
+import AddressInput, { addrText, isPicked } from '../components/AddressInput.jsx';
+import images from '../data/images.json';
+import { business, whatsappHref } from '../data/site.js';
 import DoorScene from '../components/DoorScene.jsx';
 
 /* ------------------------------------------------------------------ */
@@ -14,12 +16,20 @@ import DoorScene from '../components/DoorScene.jsx';
 function HeroBooking() {
   const navigate = useNavigate();
   const [mode, setMode] = useState('airport');
-  const [v, setV] = useState({ pickup: '', dropoff: '', date: '', time: '' });
+  const [v, setV] = useState({ pickup: null, dropoff: null, date: '', time: '' });
   const set = (k) => (e) => setV((s) => ({ ...s, [k]: e.target.value }));
+  const setAddr = (k) => (val) => setV((s) => ({ ...s, [k]: val }));
   const submit = (e) => {
     e.preventDefault();
     const q = new URLSearchParams({ service: mode === 'hourly' ? 'hourly' : mode === 'airport' ? 'airport' : 'p2p' });
-    Object.entries(v).forEach(([k, x]) => x && q.set(k, x));
+    ['pickup', 'dropoff'].forEach((k) => {
+      const a = v[k];
+      if (!addrText(a)) return;
+      q.set(k, addrText(a));
+      if (isPicked(a)) { q.set(`${k}_lat`, String(a.lat)); q.set(`${k}_lng`, String(a.lng)); if (a.placeId) q.set(`${k}_pid`, a.placeId); }
+    });
+    if (v.date) q.set('date', v.date);
+    if (v.time) q.set('time', v.time);
     navigate(`/book-now/?${q.toString()}`);
   };
   const tabs = [['airport', 'Airport'], ['p2p', 'City ride'], ['hourly', 'By the hour']];
@@ -34,11 +44,13 @@ function HeroBooking() {
       <div className="grid gap-1 rounded-[22px] bg-black/35 p-1.5 md:grid-cols-[1.3fr_1.3fr_1fr_0.8fr_auto]">
         <label className="rounded-2xl px-4 py-3 transition-colors focus-within:bg-white/[0.06] hover:bg-white/[0.04]">
           <span className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-sand">Pickup</span>
-          <input className={fieldCls} placeholder={mode === 'airport' ? 'Address, or Halifax Stanfield (YHZ)' : 'Pickup address'} value={v.pickup} onChange={set('pickup')} autoComplete="street-address" />
+          <AddressInput className={fieldCls} placeholder={mode === 'airport' ? 'Address, or ✈ YHZ' : 'Pickup address'} value={v.pickup} onChange={setAddr('pickup')} airport={mode === 'airport'} />
         </label>
         <label className="rounded-2xl px-4 py-3 transition-colors focus-within:bg-white/[0.06] hover:bg-white/[0.04]">
           <span className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-sand">{mode === 'hourly' ? 'Plan / notes' : 'Drop-off'}</span>
-          <input className={fieldCls} placeholder={mode === 'hourly' ? 'e.g. wedding, 4 hours' : mode === 'airport' ? 'Halifax Stanfield (YHZ)' : 'Destination'} value={v.dropoff} onChange={set('dropoff')} />
+          {mode === 'hourly'
+            ? <input className={fieldCls} placeholder="e.g. wedding, 4 hours" value={addrText(v.dropoff)} onChange={(e) => setAddr('dropoff')({ text: e.target.value })} />
+            : <AddressInput className={fieldCls} placeholder={mode === 'airport' ? 'Halifax Stanfield, or ✈ YHZ' : 'Destination'} value={v.dropoff} onChange={setAddr('dropoff')} airport={mode === 'airport'} />}
         </label>
         <label className="rounded-2xl px-4 py-3 transition-colors focus-within:bg-white/[0.06] hover:bg-white/[0.04]">
           <span className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-sand">Date</span>
@@ -94,7 +106,10 @@ function Hero() {
         <div className="mt-10"><HeroBooking /></div>
         <div className="fade-up mt-6 flex flex-wrap items-center justify-between gap-4" style={{ '--d': '850ms' }}>
           <Ratings />
-          <CallButton className="link-arrow text-[15px]" label={`Or call ${business.phone.display}`} />
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <CallButton className="link-arrow text-[15px]" label={`Or call ${business.phone.display}`} />
+            <a href={whatsappHref()} target="_blank" rel="noopener" className="inline-flex items-center gap-2 text-[15px] font-semibold text-white no-underline transition-colors hover:text-[#25D366]"><WhatsAppIcon className="h-[18px] w-[18px] text-[#25D366]" />WhatsApp us</a>
+          </div>
         </div>
       </div>
     </section>
@@ -121,7 +136,7 @@ function Stats() {
   const stats = [
     { n: 4.9, dec: true, suf: '', label: 'Google rating', note: 'from real riders' },
     { n: 24, suf: '/7', label: 'Dispatch & rides', note: 'red-eyes included' },
-    { n: PRICING.minimumFare, pre: '$', suf: '', label: 'Minimum fare', note: `then $${PRICING.perKm}/km, no surge` },
+    { n: VEHICLES.length, suf: '', label: 'Vehicles to choose from', note: 'sedans, SUVs & minivans' },
     { n: PRICING.waiting.freeAirportMin, suf: ' min', label: 'Free airport waiting', note: 'after your flight lands' },
   ];
   return (
@@ -191,69 +206,13 @@ function Services() {
   );
 }
 
-/* Pricing: the fare formula, worked examples and a live distance slider */
-function FareSection() {
-  const [km, setKm] = useState(38);
-  const base = VEHICLES.filter((v, i, all) => all.findIndex((x) => x.cls === v.cls) === i); // cheapest of each class
-  return (
-    <section className="relative isolate overflow-hidden border-y border-white/[0.06] bg-night py-24 sm:py-32">
-      <div aria-hidden="true" className="absolute -left-40 top-20 -z-10 h-[500px] w-[500px] rounded-full bg-brand-700/10 blur-[110px]" />
-      <div className="wrap grid gap-16 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <p className="eyebrow" data-reveal="fade"><span className="num">02</span>Honest pricing</p>
-          <h2 className="h-section mt-5" data-reveal>${PRICING.perKm} a kilometre. <em>Shown before you book.</em></h2>
-          <p className="lede mt-6" data-reveal>Every fare is the higher of ${PRICING.minimumFare} or ${PRICING.perKm} × km, plus a small surcharge for bigger or premium vehicles. No meter, no surge. The booking form adds it all up for you, extras included.</p>
-          <div className="mt-8 overflow-hidden rounded-[24px]" data-wipe>
-            <Pic name="airport-meet-greet" alt="48Taxi chauffeur waiting with a welcome sign in the arrivals hall at Halifax Stanfield" sizes="(min-width: 1024px) 520px, 100vw" imgClass="aspect-[3/2] h-auto w-full object-cover" />
-          </div>
-        </div>
-        <div>
-          <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-6 sm:p-8" data-reveal>
-            <div className="flex items-baseline justify-between gap-4">
-              <label htmlFor="km-slider" className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-3">Try a distance</label>
-              <p className="display text-4xl text-white"><span className="tabular-nums">{km}</span> km</p>
-            </div>
-            <input id="km-slider" type="range" min="2" max="150" value={km} onChange={(e) => setKm(+e.target.value)} className="mt-4 w-full accent-brand-700" />
-            <ul className="mt-6">
-              {base.map((v) => (
-                <li key={v.cls} className="flex items-baseline gap-4 border-b border-white/[0.07] py-4 last:border-b-0">
-                  <span className="text-[17px] text-white">{v.cls} <span className="text-ink-3">· {v.model}</span></span>
-                  <span aria-hidden="true" className="flex-1 translate-y-[-4px] border-b border-dotted border-white/15" />
-                  <span className="display text-3xl tabular-nums text-white">{money(tripFare(km, v.model))}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="mt-10 flex items-center justify-between border-b border-white/10 pb-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-3">
-            <span>Example trip</span><span>Corolla / Camry</span>
-          </div>
-          <ul>
-            {EXAMPLE_TRIPS.map((t, i) => (
-              <li key={t.km} className="group flex items-baseline gap-4 border-b border-white/[0.07] py-5" data-reveal style={{ '--d': `${i * 60}ms` }}>
-                <span className="text-[17px] text-white transition-colors group-hover:text-brand-700">{t.label} <span className="text-ink-3">· {t.km} km</span></span>
-                <span aria-hidden="true" className="flex-1 translate-y-[-4px] border-b border-dotted border-white/15" />
-                <span className="display text-3xl text-white">{money(tripFare(t.km, 'Toyota Camry'))}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-10 flex flex-wrap gap-3" data-reveal>
-            <Link to="/book-now/" className="btn-primary">See my exact fare <Arrow /></Link>
-            <Link to="/services-rates/" className="btn-ghost">Every vehicle & extra</Link>
-          </div>
-          <p className="mt-6 text-sm text-ink-3">Extra stops ${PRICING.perStop}. Airport pickups include {PRICING.waiting.freeAirportMin} minutes of free waiting after landing. See <Link to="/schedule/">all prices</Link>.</p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* Fleet: horizontal scroll-snap slider with arrow controls */
-const FLEET = [
-  { cls: 'Sedan', models: 'Toyota Corolla · Camry · Lincoln MKS', pax: 4, from: '+$0–15', use: 'Airport runs & business travel', img: 'chauffeur-door' },
-  { cls: 'Mid-size SUV', models: 'Toyota Highlander · Lincoln MKX', pax: 6, from: '+$10–15', use: 'Families & winter roads', img: 'airport-traveller' },
-  { cls: 'Full-size SUV', models: 'Chevy Suburban · Cadillac Escalade', pax: 7, from: '+$25–40', use: 'Groups, golf bags, VIP', img: 'driver-cockpit' },
-  { cls: 'Minivan', models: 'Dodge Caravan · Honda Odyssey', pax: 7, from: '+$10', use: 'Groups with luggage', img: 'passenger-call' },
-]; // Seating and surcharges from the pricing guide (src/lib/pricing.js). TODO(owner): send real fleet photos.
+/* Fleet: every car in a horizontal scroll-snap slider, each on a lit "showroom" stage */
+const USE = {
+  Sedan: 'Airport runs & business travel',
+  'Mid Size SUV': 'Families & winter roads',
+  'Mini Van': 'Groups with luggage',
+  'Full Size SUV': 'Groups, golf bags, VIP',
+};
 
 function Fleet() {
   const ref = useRef(null);
@@ -261,7 +220,7 @@ function Fleet() {
   return (
     <section className="py-24 sm:py-32">
       <div className="wrap">
-        <SectionHead num="03" eyebrow="The fleet" title="Chosen for <em>comfort.</em>" intro="Clean, modern sedans, SUVs and minivans. Every vehicle insured, every driver licensed and carefully selected." right={
+        <SectionHead num="02" eyebrow="The fleet" title="Chosen for <em>comfort.</em>" intro="Clean, modern sedans, SUVs and minivans. Every vehicle insured, every driver licensed and carefully selected." right={
           <div className="flex gap-2">
             <button type="button" onClick={() => go(-1)} aria-label="Previous vehicles" className="flex h-12 w-12 items-center justify-center rounded-full border border-white/15 text-white transition hover:border-brand-700 hover:text-brand-700"><Arrow className="h-4 w-4 rotate-180" /></button>
             <button type="button" onClick={() => go(1)} aria-label="Next vehicles" className="flex h-12 w-12 items-center justify-center rounded-full border border-white/15 text-white transition hover:border-brand-700 hover:text-brand-700"><Arrow className="h-4 w-4" /></button>
@@ -269,25 +228,29 @@ function Fleet() {
         } />
       </div>
       <div ref={ref} className="no-scrollbar mt-14 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 sm:px-8 lg:px-[max(2rem,calc((100vw_-_76rem)/2_+_2rem))] scroll-px-5 sm:scroll-px-8 lg:scroll-px-[max(2rem,calc((100vw_-_76rem)/2_+_2rem))]">
-        {FLEET.map((f, i) => (
-          <article key={f.cls} className="group spotlight relative w-[82vw] flex-none snap-start overflow-hidden rounded-[28px] border border-white/[0.08] bg-card sm:w-[440px]" data-reveal style={{ '--d': `${i * 90}ms` }}>
-            <div className="overflow-hidden">
-              <Pic name={f.img} alt={`${f.cls}: ${f.models}`} sizes="440px" imgClass="aspect-[4/3] h-auto w-full object-cover transition-transform duration-[1.2s] group-hover:scale-105" />
+        {VEHICLES.filter((v) => images[v.img]).map((v, i) => (
+          <article key={v.model} className="group spotlight relative w-[82vw] flex-none snap-start overflow-hidden rounded-[28px] border border-white/[0.08] bg-card sm:w-[420px]" data-reveal style={{ '--d': `${Math.min(i, 3) * 90}ms` }}>
+            {/* showroom stage: warm key light, floor reflection, soft contact shadow */}
+            <div className="relative aspect-[16/10] overflow-hidden bg-[radial-gradient(70%_60%_at_50%_35%,rgba(253,152,0,0.16),transparent_70%),linear-gradient(to_bottom,#3a2416,#1d1009)]">
+              <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[34%] bg-gradient-to-b from-white/[0.035] to-transparent" />
+              <span aria-hidden="true" className="absolute inset-x-[14%] bottom-[15%] h-5 rounded-[50%] bg-black/70 blur-lg" />
+              <span aria-hidden="true" className="display absolute -right-2 -top-3 text-[7rem] leading-none text-white/[0.04]">0{i + 1}</span>
+              <Cutout name={v.img} alt={`${v.year ? `${v.year} ` : ''}${v.model}`} sizes="(min-width: 640px) 380px, 75vw" className="absolute inset-x-[7%] bottom-[13%] top-[12%]" imgClass="drop-shadow-[0_18px_18px_rgba(0,0,0,0.55)] transition-transform duration-[1.2s] ease-out group-hover:-translate-y-1 group-hover:scale-[1.05]" />
             </div>
             <div className="p-7">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-700">0{i + 1}</p>
-              <h3 className="display mt-2 text-4xl">{f.cls}</h3>
-              <p className="mt-1 text-[15px] text-ink-3">{f.models}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-700">{v.cls}</p>
+              <h3 className="display mt-2 text-4xl">{v.model}</h3>
+              <p className="mt-1 text-[15px] text-ink-3">{v.year ? `${v.year} model` : 'Late model'}</p>
               <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/[0.08] pt-5 text-sm text-ink-2">
-                <span className="flex items-center gap-2"><Icon name="user" className="h-4 w-4 text-brand-700" />Up to {f.pax}</span>
-                <span className="tabular-nums text-brand-700">{f.from}</span>
-                <span className="flex items-center gap-2"><Icon name="sparkle" className="h-4 w-4 text-brand-700" />{f.use}</span>
+                <span className="flex items-center gap-2"><Icon name="user" className="h-4 w-4 text-brand-700" />Up to {v.pax}</span>
+                <span className="flex items-center gap-2"><Icon name="sparkle" className="h-4 w-4 text-brand-700" />{USE[v.cls]}</span>
               </div>
             </div>
           </article>
         ))}
         <div className="w-1 flex-none" aria-hidden="true" />
       </div>
+      <div className="wrap mt-8"><Link to="/book-now/" className="link-arrow">Choose your car when you book <Arrow /></Link></div>
     </section>
   );
 }
@@ -304,7 +267,7 @@ function HowItWorks() {
     <section className="border-t border-white/[0.06] py-24 sm:py-32">
       <div className="wrap grid gap-14 lg:grid-cols-2">
         <div className="lg:sticky lg:top-32 lg:self-start">
-          <p className="eyebrow" data-reveal="fade"><span className="num">04</span>How it works</p>
+          <p className="eyebrow" data-reveal="fade"><span className="num">03</span>How it works</p>
           <h2 className="h-section mt-5" data-reveal>Four steps. <em>Zero stress.</em></h2>
           <p className="lede mt-6 max-w-md" data-reveal>Booking a Halifax taxi or airport limo with 48 is designed to take less time than finding your boarding pass.</p>
           <div className="mt-8" data-reveal><BookButton>Start booking</BookButton></div>
@@ -342,7 +305,7 @@ function Tours() {
           ))}
         </div>
         <div>
-          <p className="eyebrow" data-reveal="fade"><span className="num">05</span>Private tours</p>
+          <p className="eyebrow" data-reveal="fade"><span className="num">04</span>Private tours</p>
           <h2 className="h-section mt-5" data-reveal>Nova Scotia, <em>at your pace.</em></h2>
           <p className="lede mt-6" data-reveal>Your own driver and vehicle, no tour bus. Peggy’s Cove at golden hour, Lunenburg’s harbour, the Cabot Trail, or the province’s best golf.</p>
           <ul className="mt-8 border-t border-white/10">
@@ -375,7 +338,7 @@ function Testimonials() {
     <section className="border-t border-white/[0.06] bg-night py-24 sm:py-32">
       <div className="wrap">
         <div className="flex flex-wrap items-center justify-between gap-6">
-          <p className="eyebrow" data-reveal="fade"><span className="num">06</span>What riders say</p>
+          <p className="eyebrow" data-reveal="fade"><span className="num">05</span>What riders say</p>
           <div data-reveal><Ratings /></div>
         </div>
         <figure className="mt-12 min-h-[300px] sm:min-h-[260px]" aria-live="polite">
@@ -386,28 +349,6 @@ function Testimonials() {
         <div className="mt-10 flex gap-2" role="tablist" aria-label="Choose review">
           {list.map((x, k) => (
             <button key={x.name} type="button" role="tab" aria-selected={k === i} aria-label={`Review by ${x.name}`} onClick={() => setI(k)} className={`h-1.5 rounded-full transition-all duration-500 ${k === i ? 'w-10 bg-brand-700' : 'w-4 bg-white/20 hover:bg-white/40'}`} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PerPerson() {
-  return (
-    <section className="py-24 sm:py-32">
-      <div className="wrap">
-        <SectionHead num="07" eyebrow="Per-person fares" title="Travelling together? <em>Pay per person.</em>" intro="Within our standard coverage area. Outside it, additional fees apply." />
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {perPerson.map((p, i) => (
-            <div key={p.label} className={`card spotlight flex flex-col p-8 ${i === 0 ? 'border-brand-700/40 bg-gradient-to-b from-brand-700/10 to-card' : ''}`} data-reveal style={{ '--d': `${i * 90}ms` }}>
-              <div className="flex items-center justify-between"><p className="font-medium text-ink-2">{p.label}</p>{i === 0 && <span className="chip border-brand-700/40 text-brand-700">Best value</span>}</div>
-              <p className="display mt-6 text-7xl text-white">{money(p.price)}<span className="font-sans text-base text-ink-3"> / person</span></p>
-              <ul className="mt-6 flex-1 space-y-2.5 border-t border-white/[0.08] pt-6 text-[15px] text-ink-2">
-                {p.points.map((x) => <li key={x} className="flex gap-2.5"><Icon name="check" className="mt-0.5 h-4 w-4 flex-none text-brand-700" />{x}</li>)}
-              </ul>
-              <BookButton className={`${i === 0 ? 'btn-primary' : 'btn-ghost'} mt-8 w-full`}>Book</BookButton>
-            </div>
           ))}
         </div>
       </div>
@@ -426,12 +367,10 @@ export default function Home() {
       </div>
       <Stats />
       <Services />
-      <FareSection />
       <Fleet />
       <HowItWorks />
       <Tours />
       <Testimonials />
-      <PerPerson />
       <section className="border-t border-white/[0.06] py-16" aria-label="Hotels we serve">
         <p className="wrap eyebrow">Trusted by guests of Halifax’s best hotels</p>
         <div className="mt-8 text-2xl text-ink-3 [&_.display]:text-ink-2">
@@ -452,7 +391,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <CtaBand title="From the airport in Canada & USA, we’ve got you covered." text="Comfort. Reliability. 48 Taxi. Book online or call, any hour." />
+      <CtaBand title="Flying in or out of Halifax Stanfield? We’ve got you covered." text="Comfort. Reliability. 48 Taxi. Book online or call, any hour." />
     </>
   );
 }

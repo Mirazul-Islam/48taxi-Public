@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 import { submitForm } from '../lib/forms.js';
-import { business, telHref } from '../data/site.js';
+import { business, telHref, whatsappHref } from '../data/site.js';
 
 export function useForm(formName, initial = {}) {
   const [values, setValues] = useState(initial);
@@ -95,7 +95,7 @@ export function FormStatus({ f, done = 'We received your request and will contac
       <div role="status" className="rounded-xl border border-green-700/50 bg-green-950/60 p-5">
         <p className="font-semibold text-green-100">{title}</p>
         <p className="mt-1 text-green-100">{done}</p>
-        <p className="mt-2 text-sm text-green-100">Travelling within the next few hours? Call <a href={telHref} className="font-semibold text-green-100">{business.phone.display}</a>.</p>
+        <p className="mt-2 text-sm text-green-100">Travelling within the next few hours? Call <a href={telHref} className="font-semibold text-green-100">{business.phone.display}</a> or <a href={whatsappHref('Hi 48 Taxi, I just sent a booking request on your website.')} target="_blank" rel="noopener" className="font-semibold text-green-100">message us on WhatsApp</a>.</p>
       </div>
     );
   if (f.status === 'error')

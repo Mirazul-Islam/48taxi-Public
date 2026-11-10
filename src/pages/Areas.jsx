@@ -3,6 +3,7 @@ import { PageHero, Section, Checklist, Faq, CtaBand, Reviews, Pic } from '../com
 import { areaPages } from '../data/areas.js';
 import { faqsFor } from '../lib/seo.js';
 import { FareEstimator, FareFormula } from '../components/Pricing.jsx';
+import { YHZ } from '../lib/maps.js';
 import { business } from '../data/site.js';
 
 export function AreasHub() {
@@ -41,7 +42,7 @@ export function AreaPage({ path }) {
       </PageHero>
       <Section title={`${a.name} taxi fares`} intro="Priced by driving distance. Cash, credit and debit accepted.">
         <FareFormula />
-        <div className="mt-6"><FareEstimator defaultFrom={`${a.name}, NS`} defaultTo="Halifax Stanfield International Airport" /></div>
+        <div className="mt-6"><FareEstimator defaultTo={YHZ} fromPlaceholder={`Your address in ${a.name}`} /></div>
         <div className="mt-6 flex flex-wrap gap-3"><Link to="/book-now/?service=airport" className="btn-primary">Book a {a.name} ride</Link><Link to="/schedule/" className="btn-ghost">All prices</Link></div>
       </Section>
       <Section title={`Why ${a.name} riders choose 48Taxi`} className="bg-band">

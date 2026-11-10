@@ -17,15 +17,16 @@ export const PRICING = {
 
 // Typical seating; vehicle selection depends on availability.
 export const VEHICLES = [
-  { model: 'Toyota Corolla', cls: 'Sedan', pax: 4, surcharge: 0 },
-  { model: 'Toyota Camry', cls: 'Sedan', pax: 4, surcharge: 0 },
-  { model: 'Lincoln MKS', cls: 'Sedan', pax: 4, surcharge: 15 },
-  { model: 'Toyota Highlander', cls: 'Mid Size SUV', pax: 6, surcharge: 10 },
-  { model: 'Lincoln MKX', cls: 'Mid Size SUV', pax: 4, surcharge: 15 },
-  { model: 'Dodge Caravan', cls: 'Mini Van', pax: 6, surcharge: 10 },
-  { model: 'Honda Odyssey', cls: 'Mini Van', pax: 7, surcharge: 10 },
-  { model: 'Chevy Suburban', cls: 'Full Size SUV', pax: 7, surcharge: 25, longDistancePerKm: 2.5 },
-  { model: 'Cadillac Escalade', cls: 'Full Size SUV', pax: 6, surcharge: 40, longDistancePerKm: 2.5 },
+  // year: as listed on the current 48taxi.co booking form (blank where it shows none). img: picture in public/images.
+  { model: 'Toyota Corolla', cls: 'Sedan', pax: 4, surcharge: 0, year: '', img: 'car-corolla' },
+  { model: 'Toyota Camry', cls: 'Sedan', pax: 4, surcharge: 0, year: '2024', img: 'car-camry' },
+  { model: 'Lincoln MKS', cls: 'Sedan', pax: 4, surcharge: 15, year: '2009', img: 'car-mks' },
+  { model: 'Toyota Highlander', cls: 'Mid Size SUV', pax: 6, surcharge: 10, year: '2024', img: 'car-highlander' },
+  { model: 'Lincoln MKX', cls: 'Mid Size SUV', pax: 4, surcharge: 15, year: '', img: 'car-mkx' },
+  { model: 'Dodge Caravan', cls: 'Mini Van', pax: 6, surcharge: 10, year: '2020', img: 'car-caravan' },
+  { model: 'Honda Odyssey', cls: 'Mini Van', pax: 7, surcharge: 10, year: '2018', img: 'car-odyssey' },
+  { model: 'Chevy Suburban', cls: 'Full Size SUV', pax: 7, surcharge: 25, longDistancePerKm: 2.5, year: '2018', img: 'car-suburban' },
+  { model: 'Cadillac Escalade', cls: 'Full Size SUV', pax: 6, surcharge: 40, longDistancePerKm: 2.5, year: '2019', img: 'car-escalade' },
 ];
 export const DEFAULT_VEHICLE = 'Toyota Camry';
 export const vehicleFor = (model) => VEHICLES.find((v) => v.model === model) || VEHICLES.find((v) => v.model === DEFAULT_VEHICLE);

@@ -41,5 +41,13 @@ export const business = {
   ],
 };
 
+// Google Maps browser key, read at build time from the Netlify environment variable
+// VITE_GOOGLE_MAPS_KEY (Site configuration → Environment variables). Kept out of the repository.
+// It powers address autocomplete and the automatic fare calculation (src/lib/maps.js).
+// Without it the site still works: customers type addresses and the fare is confirmed by phone.
+export const GOOGLE_MAPS_KEY = (import.meta.env && import.meta.env.VITE_GOOGLE_MAPS_KEY) || '';
+
 export const telHref = `tel:${business.phone.tel}`;
+// WhatsApp uses the main number. Optional message pre-fills the chat.
+export const whatsappHref = (text = 'Hi 48 Taxi, I’d like to book a ride.') => `https://wa.me/${business.phone.tel.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
 export const fullAddress = `${business.address.street}, ${business.address.locality}, ${business.address.regionName}`;

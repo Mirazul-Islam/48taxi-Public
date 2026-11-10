@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Pic, BookButton, CallButton } from './ui.jsx';
+import { Pic, BookButton, CallButton, WhatsAppButton } from './ui.jsx';
 import sequence from '../data/door-sequence.json';
 
 /* ==========================================================================
@@ -266,6 +266,7 @@ function Final() {
       <div className="mt-9 flex flex-wrap justify-center gap-3">
         <BookButton>Book your ride</BookButton>
         <CallButton />
+        <WhatsAppButton />
       </div>
     </div>
   );

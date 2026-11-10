@@ -1,4 +1,4 @@
-// Price notes and the few prices that are NOT distance-based (hourly, per-person group fares).
+// Price notes and the few prices that are NOT distance-based (hourly charters).
 // Distance fares, vehicle surcharges, extras and waiting time live in src/lib/pricing.js.
 
 export const fareNotes = {
@@ -18,12 +18,5 @@ export const groupDiscount = {
   text: 'Up to 20% off the regular price to anywhere outside HRM for groups.',
   groups: ['Seniors', 'Military groups', 'Student groups', 'Wedding groups', 'Prom groups', 'Conference groups', 'University teams'],
 };
-
-// Per-person fares shown on the current homepage.
-export const perPerson = [
-  { label: 'Group (3+ people)', price: 20, points: ['You arrange a group of 3 or more people', 'You make your own flight arrangements', 'Within the standard coverage area (otherwise additional fees apply)', 'Payment: cash in car'] },
-  { label: 'Pairs', price: 30, points: ['You arrange for 2 passengers', 'You make your own flight arrangements', 'Within the standard coverage area (otherwise additional fees apply)', 'Payment: cash in car'] },
-  { label: 'Individual', price: 60, points: ['For individual travel', 'Within the standard coverage area (otherwise additional fees apply)', 'Payment: cash in car'] },
-];
 
 export const money = (n) => (typeof n === 'number' ? `$${n.toLocaleString('en-CA', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })}` : n);
