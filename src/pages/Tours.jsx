@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { PageHero, Section, Pic, Checklist, Faq, CtaBand, Reviews } from '../components/ui.jsx';
 import { tours, golf } from '../data/content.js';
 import { faqsFor } from '../lib/seo.js';
-import { longDistanceNS, money } from '../data/fares.js';
 
 const bookUrl = (slug) => `/book-now/?service=tours&package=${slug}`;
 
@@ -43,7 +42,6 @@ export function Tours() {
 
 export function PeggysCove() {
   const path = '/tour/peggys-cove/';
-  const lunenburg = longDistanceNS.find((x) => x.place === 'Lunenburg');
   return (
     <>
       <PageHero path={path} eyebrow="Half-day private tour" title="Peggy’s Cove tour from Halifax" img="peggys-cove-lighthouse" imgAlt="Peggy’s Cove lighthouse reflected in a tide pool">
@@ -61,7 +59,7 @@ export function PeggysCove() {
       </Section>
       <Section title="Good to know" className="bg-band">
         <div className="grid gap-5 md:grid-cols-3">
-          <div className="card"><h3 className="font-semibold">Length</h3><p className="mt-1 text-ink-2">Half-day. Extend to a full day with Lunenburg (UNESCO World Heritage Site) and Mahone Bay{lunenburg ? `; our Lunenburg one-way fare from YHZ is ${money(lunenburg.fare)}` : ''}.</p></div>
+          <div className="card"><h3 className="font-semibold">Length</h3><p className="mt-1 text-ink-2">Half-day. Extend to a full day with Lunenburg (UNESCO World Heritage Site) and Mahone Bay.</p></div>
           <div className="card"><h3 className="font-semibold">Private & flexible</h3><p className="mt-1 text-ink-2">Just your group and your driver. Customize the stops; families with child seats welcome.</p></div>
           <div className="card"><h3 className="font-semibold">Safety on the rocks</h3><p className="mt-1 text-ink-2">Stay off the black rocks near the water: waves at Peggy’s Cove can be dangerous even on calm days.</p></div>
         </div>

@@ -1,9 +1,9 @@
 // POST /.netlify/functions/fare-estimate
 // Body: { pickup, dropoff, stops: string[], vehicle, roundTrip }
 // Uses the Google Routes API when GOOGLE_MAPS_API_KEY is set (kept server-side, never shipped
-// to the browser). Without a key it answers { configured: false } and the page falls back to
-// the published flat fares by area.
-import { priceTrip } from '../lib/pricing.mjs';
+// to the browser) to get the driving distance, then prices it with the shared fare formula.
+// Without a key it answers { configured: false } and the page shows a "from" price instead.
+import { quote } from '../lib/pricing.mjs';
 
 const json = (status, body) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
@@ -44,7 +44,8 @@ export default async (req) => {
     if (!route) return json(422, { error: 'Could not find a route between those addresses' });
     const km = route.distanceMeters / 1000;
     const minutes = Math.round(parseInt(route.duration, 10) / 60);
-    const amount = priceTrip({ km, vehicle: input.vehicle, stops: stops.length, roundTrip: !!input.roundTrip });
+    // Distance part only; the browser adds the extras the rider picked using the same formula.
+    const amount = quote({ km, vehicle: input.vehicle, stops: stops.length, roundTrip: !!input.roundTrip }).total;
     return json(200, { configured: true, km: Math.round(km * 10) / 10, minutes, amount });
   } catch {
     return json(502, { error: 'Routing service unavailable' });

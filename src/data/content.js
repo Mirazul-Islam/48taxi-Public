@@ -45,12 +45,11 @@ export const hotels = [
 ];
 
 export const popularServices = [
-  { title: 'Airport runs', text: 'Flat-rate rides to and from Halifax Stanfield (YHZ), with flight tracking and meet & greet.', to: '/halifax-airport-taxi/', img: 'airport-traveller' },
-  { title: 'Long distance & holiday trips', text: 'Province-wide fixed fares, plus New Brunswick and PEI. Up to 20% off for groups.', to: '/schedule/', img: 'nova-scotia-service-map' },
+  { title: 'Airport runs', text: 'Rides to and from Halifax Stanfield (YHZ), priced upfront, with flight tracking and meet & greet.', to: '/halifax-airport-taxi/', img: 'airport-traveller' },
+  { title: 'Long distance & holiday trips', text: 'Anywhere in Nova Scotia, plus New Brunswick and PEI, at $2 per km. Up to 20% off for groups.', to: '/schedule/', img: 'nova-scotia-service-map' },
   { title: 'Private jet pickups', text: 'Discreet chauffeured pickups at private terminals and FBOs.', to: '/halifax-limo-service/', img: 'private-jet-pickup' },
   { title: 'Boat trips', text: 'Rides to harbour cruises, ferries and the Bluenose II.', to: '/tour/', img: 'boat-trip' },
   { title: 'Courier service', text: 'Same-day parcel and document delivery across HRM.', to: '/contact/', img: 'courier-delivery' },
-  { title: 'Locked out of vehicle', text: 'Car lockout and battery boost, day or night, across HRM.', to: '/slim-jim/', img: 'car-lockout' },
 ];
 
 export const vehicles = [

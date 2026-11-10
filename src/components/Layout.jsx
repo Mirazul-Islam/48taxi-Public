@@ -13,8 +13,7 @@ const nav = [
       { to: '/halifax-limo-service/', label: 'Limo service', note: 'Escalade, Suburban, Lincoln' },
       { to: '/airport-shuttle-halifax/', label: 'Airport shuttle', note: 'Group fares from $20' },
       { to: '/corporate-hotel-transportation/', label: 'Corporate & hotels', note: 'Billed accounts' },
-      { to: '/services-rates/', label: 'Airport rates by area', note: 'Flat fares to YHZ' },
-      { to: '/slim-jim/', label: 'Lockout & battery boost', note: 'From $85, 24/7' },
+      { to: '/services-rates/', label: 'Rates & extras', note: '$2/km, $48 minimum' },
       { to: '/service-areas/', label: 'Service areas', note: 'All of Nova Scotia' },
     ],
   },
@@ -121,8 +120,7 @@ const footerCols = [
   {
     title: 'Prices & info',
     links: [
-      ['/schedule/', 'Prices & fare estimator'], ['/services-rates/', 'Airport rates by area'], ['/gti/', 'YHZ pickup instructions'],
-      ['/slim-jim/', 'Car lockout & battery boost'], ['/faq/', 'FAQ'],
+      ['/schedule/', 'Prices & fare estimator'], ['/services-rates/', 'Rates & extras'], ['/gti/', 'YHZ pickup instructions'], ['/faq/', 'FAQ'],
     ],
   },
   {

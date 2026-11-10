@@ -173,14 +173,6 @@
   "w": 190,
   "h": 190
  },
- "car-lockout": {
-  "widths": [
-   640,
-   1024
-  ],
-  "w": 1024,
-  "h": 683
- },
  "chauffeur-door": {
   "widths": [
    640,

@@ -23,7 +23,6 @@ const table = {
   '/gti/': ['airport', 'Gti'],
   '/schedule/': ['airport', 'Prices'],
   '/services-rates/': ['airport', 'ServicesRates'],
-  '/slim-jim/': ['services', 'SlimJim'],
   '/tour/': ['tours', 'Tours'],
   '/privacy-policy/': ['info', 'PrivacyPolicy'],
   '/refund-policy/': ['info', 'RefundPolicy'],

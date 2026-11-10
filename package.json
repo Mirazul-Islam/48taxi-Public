@@ -14,7 +14,8 @@
     "build:server": "vite build --ssr src/entry-server.jsx --outDir .ssr",
     "preview": "node scripts/serve.mjs",
     "images": "node scripts/optimize-images.mjs",
-    "check": "node scripts/check-seo.mjs"
+    "check": "node scripts/check-seo.mjs",
+    "frames": "node scripts/video-to-frames.mjs"
   },
   "dependencies": {
     "@fontsource/instrument-serif": "5.2.8",

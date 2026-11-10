@@ -1,35 +1,15 @@
-import tables from './fares-tables.json';
-
-// Flat airport fares by area (Services & Rates page). Values are "from" prices in CAD.
-export const airportFares = tables.airportFlatByArea;
-// "Rates to Airport" zone table (Prices page, second tab).
-export const airportZones = tables.ratesToAirportZones;
-// "Halifax Airport to HRM" table (Prices page, third tab).
-export const airportToHRM = tables.airportToHRM;
-// Long distance fixed fares from Halifax Stanfield.
-export const longDistanceNS = tables.longDistanceNS;
-export const longDistanceNBPEI = tables.longDistanceNBPEI;
+// Price notes and the few prices that are NOT distance-based (hourly, per-person group fares).
+// Distance fares, vehicle surcharges, extras and waiting time live in src/lib/pricing.js.
 
 export const fareNotes = {
   general:
-    'Price may vary based on distance, additional stops, booster seats, weather conditions, weekends or holidays, extra waiting time or delay, tolls, extra bags, late reservation, high demand (peak hours), and vehicle type/size. Gratuity is not included. A minimum gratuity surcharge of 15% applies to all prepaid & billed reservations.',
-  fuel: 'Due to sharp increases in gasoline prices, all local rates are temporarily subject to a $5.00 fuel surcharge.',
+    'Fare = the higher of $48 or $2 per km, plus the vehicle surcharge. Extra stops are $5 each. Additional services and waiting time beyond the free period are added to the fare. Gratuity is not included. A minimum gratuity surcharge of 15% applies to all prepaid & billed reservations.',
   longDistance:
-    'All long distance rates include HST. Tips are not included. Tolls, waiting time and extra stops are subject to surcharges. 48Taxi & Limo can go up to 20% off the regular price for groups.',
+    'Long distance trips use the same formula: $2 per km ($2.50 per km for the Chevy Suburban and Cadillac Escalade over 100 km), plus the vehicle surcharge. Tolls are extra. 48Taxi & Limo can go up to 20% off the regular price for groups.',
   payment: 'Cash, Visa, Mastercard, American Express and debit accepted.',
 };
 
-export const extras = [
-  ['Baby seat', '$10'],
-  ['Holding (name) sign', '$10'],
-  ['Debit or credit card fee', '$7'],
-  ['Wake-up call', '$5'],
-  ['Each added stop', '$5'],
-  ['Waiting time after the first 5 minutes', '$1 / minute'],
-];
-
 export const hourly = [
-  ['Sedan, long distance', '$1.70 / km'],
   ['Sedan, hourly', '$70 / hour'],
   ['SUV, hourly', '$95 / hour'],
 ];
@@ -47,4 +27,3 @@ export const perPerson = [
 ];
 
 export const money = (n) => (typeof n === 'number' ? `$${n.toLocaleString('en-CA', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })}` : n);
-export const fareFor = (place) => longDistanceNS.find((x) => x.place.toLowerCase().startsWith(place.toLowerCase()));
