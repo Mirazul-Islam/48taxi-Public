@@ -5,6 +5,7 @@ import { popularServices, golf, hotels, reviews, tours } from '../data/content.j
 import { perPerson, money } from '../data/fares.js';
 import { PRICING, VEHICLES } from '../lib/pricing.js';
 import { Cutout } from '../components/Visuals.jsx';
+import AddressInput, { addrText, isPicked } from '../components/AddressInput.jsx';
 import images from '../data/images.json';
 import { business, whatsappHref } from '../data/site.js';
 import DoorScene from '../components/DoorScene.jsx';
@@ -16,12 +17,20 @@ import DoorScene from '../components/DoorScene.jsx';
 function HeroBooking() {
   const navigate = useNavigate();
   const [mode, setMode] = useState('airport');
-  const [v, setV] = useState({ pickup: '', dropoff: '', date: '', time: '' });
+  const [v, setV] = useState({ pickup: null, dropoff: null, date: '', time: '' });
   const set = (k) => (e) => setV((s) => ({ ...s, [k]: e.target.value }));
+  const setAddr = (k) => (val) => setV((s) => ({ ...s, [k]: val }));
   const submit = (e) => {
     e.preventDefault();
     const q = new URLSearchParams({ service: mode === 'hourly' ? 'hourly' : mode === 'airport' ? 'airport' : 'p2p' });
-    Object.entries(v).forEach(([k, x]) => x && q.set(k, x));
+    ['pickup', 'dropoff'].forEach((k) => {
+      const a = v[k];
+      if (!addrText(a)) return;
+      q.set(k, addrText(a));
+      if (isPicked(a)) { q.set(`${k}_lat`, String(a.lat)); q.set(`${k}_lng`, String(a.lng)); if (a.placeId) q.set(`${k}_pid`, a.placeId); }
+    });
+    if (v.date) q.set('date', v.date);
+    if (v.time) q.set('time', v.time);
     navigate(`/book-now/?${q.toString()}`);
   };
   const tabs = [['airport', 'Airport'], ['p2p', 'City ride'], ['hourly', 'By the hour']];
@@ -36,11 +45,13 @@ function HeroBooking() {
       <div className="grid gap-1 rounded-[22px] bg-black/35 p-1.5 md:grid-cols-[1.3fr_1.3fr_1fr_0.8fr_auto]">
         <label className="rounded-2xl px-4 py-3 transition-colors focus-within:bg-white/[0.06] hover:bg-white/[0.04]">
           <span className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-sand">Pickup</span>
-          <input className={fieldCls} placeholder={mode === 'airport' ? 'Address, or Halifax Stanfield (YHZ)' : 'Pickup address'} value={v.pickup} onChange={set('pickup')} autoComplete="street-address" />
+          <AddressInput className={fieldCls} placeholder={mode === 'airport' ? 'Address, or ✈ YHZ' : 'Pickup address'} value={v.pickup} onChange={setAddr('pickup')} airport={mode === 'airport'} />
         </label>
         <label className="rounded-2xl px-4 py-3 transition-colors focus-within:bg-white/[0.06] hover:bg-white/[0.04]">
           <span className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-sand">{mode === 'hourly' ? 'Plan / notes' : 'Drop-off'}</span>
-          <input className={fieldCls} placeholder={mode === 'hourly' ? 'e.g. wedding, 4 hours' : mode === 'airport' ? 'Halifax Stanfield (YHZ)' : 'Destination'} value={v.dropoff} onChange={set('dropoff')} />
+          {mode === 'hourly'
+            ? <input className={fieldCls} placeholder="e.g. wedding, 4 hours" value={addrText(v.dropoff)} onChange={(e) => setAddr('dropoff')({ text: e.target.value })} />
+            : <AddressInput className={fieldCls} placeholder={mode === 'airport' ? 'Halifax Stanfield, or ✈ YHZ' : 'Destination'} value={v.dropoff} onChange={setAddr('dropoff')} airport={mode === 'airport'} />}
         </label>
         <label className="rounded-2xl px-4 py-3 transition-colors focus-within:bg-white/[0.06] hover:bg-white/[0.04]">
           <span className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-sand">Date</span>

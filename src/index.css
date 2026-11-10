@@ -163,6 +163,16 @@ html:not(.js) .door-scene { height: 100svh; }
 html:not(.js) .door-cap { display: none; }
 html:not(.js) .door-cap.door-final { display: block; }
 
+/* Google address suggestions (Places autocomplete), styled to match the site */
+.pac-container { z-index: 2147483000 !important; margin-top: 6px; border: 1px solid rgba(255, 255, 255, 0.12) !important; border-radius: 16px; overflow: hidden; background: #2B201D !important; box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.7) !important; font-family: 'Inter Variable', Inter, system-ui, sans-serif !important; }
+.pac-container::after { background-color: #2B201D; background-position: right 12px center; filter: invert(1) brightness(0.8); opacity: 0.6; }
+.pac-item { padding: 10px 14px !important; border-top: 1px solid rgba(255, 255, 255, 0.06) !important; color: #BCAEA2 !important; font-size: 13px !important; line-height: 1.5 !important; cursor: pointer; }
+.pac-item:first-child { border-top: 0 !important; }
+.pac-item:hover, .pac-item-selected { background: rgba(253, 152, 0, 0.1) !important; }
+.pac-item-query { color: #F3EEE9 !important; font-size: 14px !important; padding-right: 4px; }
+.pac-matched { color: #FD9800 !important; }
+.pac-icon { filter: invert(1) brightness(0.75); opacity: 0.7; }
+
 /* Hide scrollbars on horizontal sliders */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }

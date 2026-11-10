@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { PageHero, Section, Pic, Checklist, Faq, CtaBand, Reviews, Icon } from '../components/ui.jsx';
 import { FareEstimator, FareFormula, VehicleTable, AddonTable, WaitingTable } from '../components/Pricing.jsx';
+import { YHZ } from '../lib/maps.js';
 import { fareNotes, hourly, groupDiscount, perPerson, money } from '../data/fares.js';
 import { getaways, vehicles } from '../data/content.js';
 import { faqsFor } from '../lib/seo.js';
@@ -36,7 +37,7 @@ export function AirportTaxi() {
       </PageHero>
       <Section title="Halifax airport taxi fares" intro={`Every airport fare is worked out from the driving distance, and you see the full price before you book. ${fareNotes.payment}`}>
         <FareFormula />
-        <div className="mt-6"><FareEstimator defaultTo="Halifax Stanfield International Airport" /></div>
+        <div className="mt-6"><FareEstimator defaultTo={YHZ} fromPlaceholder="Your address, hotel or cruise terminal" /></div>
         <p className="mt-4 text-sm text-ink-3">{fareNotes.general}</p>
         <div className="mt-6 flex flex-wrap gap-3"><Link to="/book-now/?service=airport" className="btn-primary">Book an airport taxi</Link><Link to="/schedule/" className="btn-ghost">Estimate my fare</Link></div>
       </Section>

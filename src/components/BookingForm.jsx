@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Input, Select, Textarea, Check, Honeypot, FormStatus, SubmitButton, Field } from './form-kit.jsx';
+import AddressInput, { addrText } from './AddressInput.jsx';
+import { YHZ, isYhzText } from '../lib/maps.js';
 import { tours, airlines, luggageTypes } from '../data/content.js';
 import { business } from '../data/site.js';
 import { VEHICLES, DEFAULT_VEHICLE, ADDONS, PRICING, WAITING_TERMS, quote } from '../lib/pricing.js';
@@ -8,7 +10,6 @@ import { QuoteBreakdown, useRoute } from './Pricing.jsx';
 import { money } from '../data/fares.js';
 import { Cutout, ItemCounter } from './Visuals.jsx';
 
-const YHZ = `Halifax Stanfield International Airport (YHZ), ${business.airport.address}`;
 const SERVICE = [['airport', 'Airport pickup / drop-off'], ['p2p', 'Point A → Point B'], ['hourly', 'Hourly / charter'], ['tours', 'Tours (Nova Scotia)']];
 const SEATS = [['highback', 'Highback booster', ADDONS.seat], ['backless', 'Backless booster', ADDONS.seat], ['infant', 'Infant rear-facing seat', ADDONS.infantSeat]];
 // Luggage that costs extra; everything else (personal item, carry-on, check-in, stroller, garment) is free.
@@ -17,10 +18,21 @@ const OVERSIZE_KEYS = ['oversize', 'golf'];
 const luggagePrice = (k) => (PET_KEYS.includes(k) ? ADDONS.pet : OVERSIZE_KEYS.includes(k) ? ADDONS.oversize : 0);
 const CLASSES = [...new Set(VEHICLES.map((x) => x.cls))];
 
+function AirportLock({ label }) {
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-brand-700/35 bg-brand-700/[0.07] p-3 sm:col-span-2">
+      <span aria-hidden="true" className="flex h-9 w-9 flex-none items-center justify-center rounded-lg border border-brand-700/40 bg-brand-700/15 text-brand-700">✈</span>
+      <span className="min-w-0 text-sm"><b className="text-white">{label}: Halifax Stanfield Airport (YHZ)</b><span className="block truncate text-ink-3">{business.airport.address}</span></span>
+    </div>
+  );
+}
+
 export default function BookingForm() {
   const f = useForm('booking', { serviceType: '', tripType: 'One-way', vehicle: DEFAULT_VEHICLE, passengers: '1', requestType: 'Book now', contactPreference: 'Either', assistBags: '' });
   const v = f.values;
-  const [stops, setStops] = useState([]);
+  const [stops, setStops] = useState([]); // address objects
+  const [addr, setAddr] = useState({ pickup: null, dropoff: null, retPickup: null, retDropoff: null });
+  const setA = (k) => (val) => setAddr((a) => ({ ...a, [k]: val }));
   const [luggage, setLuggage] = useState({});
   const [seats, setSeats] = useState({});
   const [diffReturn, setDiffReturn] = useState(false);
@@ -35,30 +47,41 @@ export default function BookingForm() {
     if (pkg && tours.some((t) => t.slug === pkg)) f.put('tourPackage', pkg);
     const dir = q.get('direction');
     if (dir === 'from' || dir === 'to') f.put('airportDirection', dir);
-    // Values handed over from the homepage booking bar.
-    const pickup = q.get('pickup');
-    const dropoff = q.get('dropoff');
-    const isYhz = (s) => /yhz|stanfield|airport/i.test(s || '');
-    if (s === 'airport' && !dir) f.put('airportDirection', isYhz(pickup) ? 'from' : 'to');
-    if (pickup && !(s === 'airport' && isYhz(pickup))) f.put('pickupAddress', pickup);
-    if (dropoff && !(s === 'airport' && isYhz(dropoff))) f.put(s === 'hourly' ? 'notes' : 'dropoffAddress', dropoff);
+    // Values handed over from the homepage booking bar or the fare calculator.
+    const read = (k) => {
+      const text = q.get(k);
+      if (!text) return null;
+      const lat = parseFloat(q.get(`${k}_lat`));
+      const lng = parseFloat(q.get(`${k}_lng`));
+      return Number.isFinite(lat) && Number.isFinite(lng) ? { text, lat, lng, placeId: q.get(`${k}_pid`) || '' } : { text };
+    };
+    const pickup = read('pickup');
+    const dropoff = read('dropoff');
+    if (s === 'airport' && !dir) f.put('airportDirection', isYhzText(pickup?.text) ? 'from' : 'to');
+    if (pickup && !(s === 'airport' && isYhzText(pickup.text))) setA('pickup')(pickup);
+    if (dropoff && !(s === 'airport' && isYhzText(dropoff.text))) {
+      if (s === 'hourly') f.put('notes', dropoff.text);
+      else setA('dropoff')(dropoff);
+    }
     if (q.get('date')) f.put('pickupDate', q.get('date'));
     if (q.get('time')) f.put('pickupTime', q.get('time'));
+    if (VEHICLES.some((x) => x.model === q.get('vehicle'))) f.put('vehicle', q.get('vehicle'));
+    if (q.get('trip') === 'round') f.put('tripType', 'Round trip');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isAirport = v.serviceType === 'airport';
   const isTour = v.serviceType === 'tours';
   const roundTrip = v.tripType === 'Round trip';
-  const pickup = isAirport && v.airportDirection === 'from' ? YHZ : v.pickupAddress;
-  const dropoff = isAirport && v.airportDirection === 'to' ? YHZ : v.dropoffAddress;
+  const pickup = isAirport && v.airportDirection === 'from' ? YHZ : addr.pickup;
+  const dropoff = isAirport && v.airportDirection === 'to' ? YHZ : addr.dropoff;
 
   const luggageText = useMemo(() => luggageTypes.filter(([k]) => luggage[k]).map(([k, l]) => `${l} × ${luggage[k]}`).join(', '), [luggage]);
   const seatText = useMemo(() => SEATS.filter(([k]) => seats[k]).map(([k, l]) => `${l} × ${seats[k]}`).join(', '), [seats]);
 
   // Live price: the driving distance comes from the route lookup, everything else from the pricing guide.
   const byDistance = v.serviceType !== 'hourly' && !isTour;
-  const stopList = stops.filter(Boolean);
+  const stopList = stops.filter((x) => addrText(x).trim());
   const route = useRoute({ pickup, dropoff, stops: stopList, vehicle: v.vehicle, roundTrip, enabled: byDistance });
   const count = (keys) => keys.reduce((t, k) => t + (luggage[k] || 0), 0);
   const q = quote({
@@ -73,17 +96,17 @@ export default function BookingForm() {
 
   const submit = (e) =>
     f.onSubmit(e, {
-      pickupAddress: pickup,
-      dropoffAddress: dropoff,
-      stops: stops.filter(Boolean),
+      pickupAddress: addrText(pickup),
+      dropoffAddress: addrText(dropoff),
+      stops: stopList.map(addrText),
       luggage: luggageText,
       childSeats: seatText,
       tourPackage: isTour ? (tours.find((t) => t.slug === v.tourPackage)?.name || v.tourPackage) : '',
       airportDirection: isAirport ? (v.airportDirection === 'from' ? 'From YHZ to destination' : 'From pickup to YHZ') : '',
       estimate: estimateText,
       assistBags: { door: `Yes, to the door ($${ADDONS.assistBags})`, heavy: `Yes, stairs or 4+ heavy bags ($${ADDONS.assistBagsHeavy})` }[v.assistBags] || '',
-      returnPickupAddress: roundTrip ? (diffReturn ? v.returnPickupAddress : dropoff) : '',
-      returnDropoffAddress: roundTrip ? (diffReturn ? v.returnDropoffAddress : pickup) : '',
+      returnPickupAddress: roundTrip ? addrText(diffReturn ? addr.retPickup : dropoff) : '',
+      returnDropoffAddress: roundTrip ? addrText(diffReturn ? addr.retDropoff : pickup) : '',
     });
 
   if (f.status === 'done') return <FormStatus f={f} title="Booking request received" done="Thanks! We’ll confirm your ride by your preferred contact method shortly. Nothing has been charged." />;
@@ -115,25 +138,29 @@ export default function BookingForm() {
         <Input f={f} name="pickupTime" type="time" label="Pickup time" required />
 
         {isAirport && v.airportDirection === 'from' ? (
-          <div className="sm:col-span-2 rounded-lg bg-band p-3 text-sm"><b>Pickup:</b> {YHZ}</div>
+          <AirportLock label="Pickup" />
         ) : (
-          <Input f={f} name="pickupAddress" label="Pickup address" required autoComplete="street-address" className="sm:col-span-2" />
+          <Field label="Pickup address" required className="sm:col-span-2">
+            {(id) => <AddressInput id={id} name="pickupAddress" required value={addr.pickup} onChange={setA('pickup')} placeholder="Address, hotel or business" />}
+          </Field>
         )}
         {stops.map((s, i) => (
-          <div key={i} className="flex items-end gap-2 sm:col-span-2">
+          <div key={i} className="flex items-start gap-2 sm:col-span-2">
             <Field label={`Stop ${i + 1}`} className="flex-1">
-              {(id) => <input id={id} className="field" value={s} onChange={(e) => setStops(stops.map((x, j) => (j === i ? e.target.value : x)))} />}
+              {(id) => <AddressInput id={id} value={s} onChange={(val) => setStops(stops.map((x, j) => (j === i ? val : x)))} placeholder="Stop address" />}
             </Field>
-            <button type="button" onClick={() => setStops(stops.filter((_, j) => j !== i))} className="btn-ghost min-h-[46px]" aria-label={`Remove stop ${i + 1}`}>Remove</button>
+            <button type="button" onClick={() => setStops(stops.filter((_, j) => j !== i))} className="btn-ghost mt-[26px] min-h-[46px]" aria-label={`Remove stop ${i + 1}`}>Remove</button>
           </div>
         ))}
         {stops.length < 4 && (
-          <button type="button" onClick={() => setStops([...stops, ''])} className="justify-self-start text-sm font-semibold text-brand-700 sm:col-span-2">+ Add a stop <span className="font-normal text-ink-3">({money(PRICING.perStop)} per stop)</span></button>
+          <button type="button" onClick={() => setStops([...stops, null])} className="justify-self-start text-sm font-semibold text-brand-700 sm:col-span-2">+ Add a stop <span className="font-normal text-ink-3">({money(PRICING.perStop)} per stop)</span></button>
         )}
         {isAirport && v.airportDirection === 'to' ? (
-          <div className="sm:col-span-2 rounded-lg bg-band p-3 text-sm"><b>Drop-off:</b> {YHZ}</div>
+          <AirportLock label="Drop-off" />
         ) : (
-          <Input f={f} name="dropoffAddress" label="Drop-off address" required={!isTour && v.serviceType !== 'hourly'} className="sm:col-span-2" />
+          <Field label="Drop-off address" required={!isTour && v.serviceType !== 'hourly'} className="sm:col-span-2">
+            {(id) => <AddressInput id={id} name="dropoffAddress" required={!isTour && v.serviceType !== 'hourly'} value={addr.dropoff} onChange={setA('dropoff')} placeholder="Address, hotel or business" />}
+          </Field>
         )}
 
         {isAirport && (
@@ -154,8 +181,12 @@ export default function BookingForm() {
             </label>
             {diffReturn && (
               <>
-                <Input f={f} name="returnPickupAddress" label="Return pickup address" required />
-                <Input f={f} name="returnDropoffAddress" label="Return drop-off address" required />
+                <Field label="Return pickup address" required>
+                  {(id) => <AddressInput id={id} name="returnPickupAddress" required value={addr.retPickup} onChange={setA('retPickup')} airport />}
+                </Field>
+                <Field label="Return drop-off address" required>
+                  {(id) => <AddressInput id={id} name="returnDropoffAddress" required value={addr.retDropoff} onChange={setA('retDropoff')} airport />}
+                </Field>
               </>
             )}
             {isAirport && (
@@ -228,6 +259,7 @@ export default function BookingForm() {
           <p className="text-sm text-ink-3">{byDistance ? `$${PRICING.perKm}/km, $${PRICING.minimumFare} minimum, plus vehicle surcharge` : 'Extras you’ve picked'}</p>
         </div>
         {byDistance && route.status === 'loading' && <p className="mb-2 text-sm text-ink-3">Measuring your route…</p>}
+        {byDistance && route.status === 'idle' && <p className="mb-2 text-sm text-ink-3">Choose your addresses from the suggestions and your exact fare appears here.</p>}
         {q.lines.length ? (
           <QuoteBreakdown
             q={q}

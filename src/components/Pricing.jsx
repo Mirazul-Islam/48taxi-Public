@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PRICING, VEHICLES, DEFAULT_VEHICLE, ADDON_LIST, WAITING_LIST, EXAMPLE_TRIPS, tripFare, quote } from '../lib/pricing.js';
 import { requestRoute } from '../lib/estimate.js';
+import { mapsFailed, isYhzText } from '../lib/maps.js';
+import AddressInput, { isPicked, addrText } from './AddressInput.jsx';
 import { money } from '../data/fares.js';
 
 /* The fare formula, front and centre. */
@@ -90,22 +92,47 @@ export function QuoteBreakdown({ q, minutes, note }) {
   );
 }
 
-/** Look up the driving distance when the addresses settle. */
+/** An address is ready to route once it's picked from Google (or, if Google is unavailable, typed out). */
+const routable = (a) => isPicked(a) || (mapsFailed() && addrText(a).trim().length > 5);
+const pointKey = (a) => (isPicked(a) ? `${a.lat.toFixed(5)},${a.lng.toFixed(5)}` : addrText(a));
+
+/** Look up the driving distance once both addresses (and any stops) are ready. */
 export function useRoute({ pickup, dropoff, stops = [], vehicle, roundTrip, enabled = true }) {
   const [route, setRoute] = useState({ status: 'idle', km: null, minutes: null });
-  const key = JSON.stringify([pickup, dropoff, stops]);
+  const ready = enabled && routable(pickup) && routable(dropoff) && stops.every(routable);
+  const key = ready ? [pickup, ...stops, dropoff].map(pointKey).join('|') : '';
   useEffect(() => {
-    if (!enabled || !pickup || pickup.length < 4 || !dropoff || dropoff.length < 4) { setRoute({ status: 'idle', km: null, minutes: null }); return undefined; }
+    if (!key) { setRoute({ status: 'idle', km: null, minutes: null }); return undefined; }
     let live = true;
     setRoute((r) => ({ ...r, status: 'loading' }));
     const t = setTimeout(async () => {
       const r = await requestRoute({ pickup, dropoff, stops, vehicle, roundTrip });
       if (live) setRoute(r ? { status: 'ok', ...r } : { status: 'unavailable', km: null, minutes: null });
-    }, 700);
+    }, 250);
     return () => { live = false; clearTimeout(t); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, enabled]);
+  }, [key]);
   return route;
+}
+
+/** Link into the booking form with the trip already filled in (addresses keep their map position). */
+export function bookingLink({ pickup, dropoff, vehicle, roundTrip }) {
+  const q = new URLSearchParams();
+  const put = (k, a) => {
+    if (!addrText(a)) return;
+    q.set(k, addrText(a));
+    if (isPicked(a)) { q.set(`${k}_lat`, String(a.lat)); q.set(`${k}_lng`, String(a.lng)); if (a.placeId) q.set(`${k}_pid`, a.placeId); }
+  };
+  const fromYhz = isYhzText(addrText(pickup));
+  const toYhz = isYhzText(addrText(dropoff));
+  q.set('service', fromYhz || toYhz ? 'airport' : 'p2p');
+  if (fromYhz) q.set('direction', 'from');
+  else if (toYhz) q.set('direction', 'to');
+  put('pickup', pickup);
+  put('dropoff', dropoff);
+  if (vehicle) q.set('vehicle', vehicle);
+  if (roundTrip) q.set('trip', 'round');
+  return `/book-now/?${q.toString()}`;
 }
 
 export function VehicleSelect({ value, onChange, className = 'field', name, id }) {
@@ -121,8 +148,8 @@ export function VehicleSelect({ value, onChange, className = 'field', name, id }
   );
 }
 
-/* ---------------- Fare estimator (Prices page) ---------------- */
-export function FareEstimator({ defaultFrom = '', defaultTo = '' }) {
+/* ---------------- Fare estimator (Prices, airport and area pages) ---------------- */
+export function FareEstimator({ defaultFrom = null, defaultTo = null, fromPlaceholder = 'Address, hotel, or ✈ YHZ' }) {
   const [from, setFrom] = useState(defaultFrom);
   const [to, setTo] = useState(defaultTo);
   const [vehicle, setVehicle] = useState(DEFAULT_VEHICLE);
@@ -133,14 +160,17 @@ export function FareEstimator({ defaultFrom = '', defaultTo = '' }) {
   useEffect(() => { if (route.status === 'ok') setKmInput(String(route.km)); }, [route.status, route.km]);
   const km = parseFloat(kmInput);
   const q = quote({ km: km > 0 ? km : null, vehicle, stops, roundTrip: round });
-  const routeMsg = { loading: 'Finding the route…', unavailable: 'We couldn’t measure that route automatically. Type the distance in km, or call us for an exact quote.' }[route.status];
+  const routeMsg = {
+    loading: 'Measuring the driving distance…',
+    unavailable: 'We couldn’t measure that route automatically. Type the distance in km, or call us for an exact quote.',
+  }[route.status];
 
   return (
     <div className="card grid gap-8 p-5 sm:p-7 lg:grid-cols-[1.2fr_1fr]">
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block sm:col-span-2"><span className="label">Pickup address</span><input className="field" value={from} onChange={(e) => setFrom(e.target.value)} placeholder="Address, or Halifax Stanfield (YHZ)" autoComplete="street-address" /></label>
-        <label className="block sm:col-span-2"><span className="label">Drop-off address</span><input className="field" value={to} onChange={(e) => setTo(e.target.value)} placeholder="Destination" /></label>
-        <label className="block"><span className="label">Distance (km)</span><input className="field" type="number" inputMode="decimal" min="0" step="0.1" value={kmInput} onChange={(e) => setKmInput(e.target.value)} placeholder="Filled in from the route" /><span className="hint">{(route.status === 'loading' || !(km > 0)) && routeMsg ? routeMsg : 'Worked out from the addresses, or type it in.'}</span></label>
+        <div className="sm:col-span-2"><label className="label" htmlFor="fe-from">Pickup</label><AddressInput id="fe-from" value={from} onChange={setFrom} placeholder={fromPlaceholder} airport /></div>
+        <div className="sm:col-span-2"><label className="label" htmlFor="fe-to">Drop-off</label><AddressInput id="fe-to" value={to} onChange={setTo} placeholder="Destination, or ✈ YHZ" airport /></div>
+        <label className="block"><span className="label">Distance (km)</span><input className="field" type="number" inputMode="decimal" min="0" step="0.1" value={kmInput} onChange={(e) => setKmInput(e.target.value)} placeholder="Filled in automatically" /><span className="hint">{routeMsg || (km > 0 ? 'Measured from your addresses. You can also type it in.' : 'Pick both addresses, or type the distance.')}</span></label>
         <label className="block"><span className="label">Vehicle</span><VehicleSelect value={vehicle} onChange={(e) => setVehicle(e.target.value)} /></label>
         <label className="block"><span className="label">Trip</span><select className="field" value={round ? 'r' : 'o'} onChange={(e) => setRound(e.target.value === 'r')}><option value="o">One-way</option><option value="r">Round trip</option></select></label>
         <label className="block"><span className="label">Extra stops</span><select className="field" value={stops} onChange={(e) => setStops(+e.target.value)}>{[0, 1, 2, 3, 4].map((n) => <option key={n} value={n}>{n}</option>)}</select></label>
@@ -148,7 +178,7 @@ export function FareEstimator({ defaultFrom = '', defaultTo = '' }) {
       <div className="rounded-xl bg-black/25 p-5">
         <QuoteBreakdown q={q} minutes={route.status === 'ok' ? route.minutes : null} />
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link to="/book-now/" className="btn-primary">Book this ride</Link>
+          <Link to={bookingLink({ pickup: from, dropoff: to, vehicle, roundTrip: round })} className="btn-primary">Book this ride</Link>
         </div>
         <p className="mt-4 text-xs text-ink-3">Add child seats, meet &amp; greet and other extras when you book. Waiting time beyond the free period is $0.75/min. Gratuity not included.</p>
       </div>

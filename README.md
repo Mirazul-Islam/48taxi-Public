@@ -25,7 +25,7 @@ count-up stats, marquees and smooth scrolling (all motion respects reduced-motio
 - 301 redirects in `netlify.toml` for WordPress leftovers (`/feed/`, `/wp-content/…`, old fare PDFs, `/sitemap.rss`, …) and friendly aliases (`/prices/`, `/tours/`, `/park-and-fly/` …).
 - **Forms** (booking, contact, affiliate) are stored by Netlify Forms, with a honeypot to filter spam.
 - **Functions:**
-  - `fare-estimate` gets the driving distance from the Google Routes API when a key is set. Without a key, riders can type the distance in the estimator, and the booking form shows a "from" price that the team confirms.
+  - Fares are calculated in the browser: Google address suggestions plus Google's driving distance (`src/lib/maps.js`), priced with `src/lib/pricing.js`. `fare-estimate` is only a backup that uses a server key if one is set. Without any key, customers type addresses (or the distance) and the booking form shows a "from" price that the team confirms.
   - `submission-created` can email each form submission through Resend.
 
 ## Homepage door scene (scroll animation)
@@ -110,7 +110,8 @@ npm run preview    # serves dist/ like Netlify (gzip, pretty URLs, 404) on :4173
 
    | Variable | Purpose |
    |---|---|
-   | `GOOGLE_MAPS_API_KEY` | **Needed for automatic prices.** Measures the driving distance so the booking form and estimator show the exact fare. Enable the Routes API, and restrict the key to that API. |
+   | `VITE_GOOGLE_MAPS_KEY` | **Needed for automatic prices.** The Google Maps browser key (the same one the WordPress booking form uses). It powers address suggestions and the distance-based fare in the booking form, the fare calculator and the homepage search. In Google Cloud, enable Maps JavaScript API, Places API, Distance Matrix API and Directions API, and add this site's domains (e.g. `48taxi.co/*`, `*.netlify.app/*`) to the key's website restrictions. Redeploy after adding it. |
+   | `GOOGLE_MAPS_API_KEY` | Optional backup: a server key restricted to the Routes API, used only if the browser lookup fails. |
    | `RESEND_API_KEY`, `NOTIFY_EMAIL`, `FROM_EMAIL` | Email every submission to your inbox via Resend. `FROM_EMAIL` must be on a domain you verified in Resend. |
    | `SEND_CONFIRMATION=true` | Also email the customer a copy. |
 4. Test on the `*.netlify.app` URL first: book a test ride and check it appears under Forms.
