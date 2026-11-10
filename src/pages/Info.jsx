@@ -98,12 +98,12 @@ export function Affiliate() {
 }
 
 const devRole = {
-  title: 'Full Stack Software Developer', pay: '$25 to $30 per hour CAD, based on experience', meta: ['Fully remote (Nova Scotia based)', 'Flexible hours', 'Application deadline: May 1'],
+  title: 'Full Stack Software Developer', pay: '$25 to $30 per hour CAD, based on experience', meta: ['Hybrid (Halifax area)', 'Flexible hours', 'Application deadline: May 1'],
   about: 'You will develop and maintain our software stack and AI dispatch systems, working directly with the founder on production systems used by customers and drivers every day. This is hands-on engineering work on real, in-market products, not a maintenance role.',
   doList: ['Develop and maintain React Native mobile applications for iOS and Android', 'Develop and maintain React based web applications', 'Develop and maintain backend APIs and serverless or cloud functions', 'Develop and maintain AI dispatch systems and agentic workflows', 'Design and manage PostgreSQL database schemas and queries via Supabase', 'Implement cloud infrastructure and deployment pipelines', 'Integrate LLMs and AI assisted workflows into production features', 'Write, test, deploy, and monitor production software', 'Participate in technical decision making and system architecture'],
   req: ['Proficiency in JavaScript and TypeScript', 'Experience with React and React Native', 'Comfortable building and consuming REST APIs', 'Working knowledge of SQL and relational databases (PostgreSQL preferred)', 'Familiarity with Git and modern development workflows', 'Strong portfolio, GitHub, or demonstrable projects'],
   nice: ['Experience with Supabase, Firebase, or similar BaaS platforms', 'Serverless or cloud functions (AWS Lambda, Vercel, Cloudflare Workers, Supabase Edge Functions)', 'Experience working with LLMs, AI assisted development tools, prompt engineering, and agentic workflows', 'Mobile app deployment (App Store, Google Play)', 'CI/CD and automated testing'],
-  offer: ['Fully remote, work from anywhere in Nova Scotia', 'Flexible schedule, output focused culture', 'Performance based raises', 'Real production system experience from day one', 'Hands on work with a modern AI stack', 'Growth opportunity at an established, highly rated Nova Scotia company', 'Direct mentorship and collaboration with the founder'],
+  offer: ['Hybrid: work from home and in person in the Halifax area', 'Flexible schedule, output focused culture', 'Performance based raises', 'Real production system experience from day one', 'Hands on work with a modern AI stack', 'Growth opportunity at an established, highly rated Nova Scotia company', 'Direct mentorship and collaboration with the founder'],
   mail: 'Application%20%E2%80%93%20Full%20Stack%20Software%20Developer',
 };
 const driverRole = {
