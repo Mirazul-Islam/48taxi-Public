@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Input, Select, Textarea, Check, Honeypot, FormStatus, SubmitButton, Field } from './form-kit.jsx';
-import { tours, airlines, luggageTypes, vehicles } from '../data/content.js';
+import { tours, airlines, luggageTypes } from '../data/content.js';
 import { business } from '../data/site.js';
-import { requestEstimate } from '../lib/estimate.js';
+import { VEHICLES, DEFAULT_VEHICLE, ADDONS, PRICING, WAITING_TERMS, quote } from '../lib/pricing.js';
+import { QuoteBreakdown, useRoute } from './Pricing.jsx';
+import { money } from '../data/fares.js';
 
 const YHZ = `Halifax Stanfield International Airport (YHZ), ${business.airport.address}`;
 const SERVICE = [['airport', 'Airport pickup / drop-off'], ['p2p', 'Point A → Point B'], ['hourly', 'Hourly / charter'], ['tours', 'Tours (Nova Scotia)']];
-const VEHICLES = ['Sedan', 'Mid Size SUV', 'Full Size SUV', 'Mini Van'];
-const SEATS = [['highback', 'Highback booster'], ['backless', 'Backless booster'], ['infant', 'Infant car seat']];
+const SEATS = [['highback', 'Highback booster', ADDONS.seat], ['backless', 'Backless booster', ADDONS.seat], ['infant', 'Infant rear-facing seat', ADDONS.infantSeat]];
+// Luggage that costs extra; everything else (personal item, carry-on, check-in, stroller, garment) is free.
+const PET_KEYS = ['petDog', 'petCat'];
+const OVERSIZE_KEYS = ['oversize', 'golf'];
+const luggagePrice = (k) => (PET_KEYS.includes(k) ? ADDONS.pet : OVERSIZE_KEYS.includes(k) ? ADDONS.oversize : 0);
+const CLASSES = [...new Set(VEHICLES.map((x) => x.cls))];
 
 function Counter({ label, value = 0, onChange, max = 5 }) {
   return (
@@ -24,13 +30,12 @@ function Counter({ label, value = 0, onChange, max = 5 }) {
 }
 
 export default function BookingForm() {
-  const f = useForm('booking', { serviceType: '', tripType: 'One-way', vehicle: 'Sedan', passengers: '1', requestType: 'Book now', contactPreference: 'Either' });
+  const f = useForm('booking', { serviceType: '', tripType: 'One-way', vehicle: DEFAULT_VEHICLE, passengers: '1', requestType: 'Book now', contactPreference: 'Either', assistBags: '' });
   const v = f.values;
   const [stops, setStops] = useState([]);
   const [luggage, setLuggage] = useState({});
   const [seats, setSeats] = useState({});
   const [diffReturn, setDiffReturn] = useState(false);
-  const [est, setEst] = useState(null); // {status, text}
 
   // Pre-fill from links like /book-now/?service=tours&package=peggys-cove-coastal-stops (kept from the old site).
   useEffect(() => {
@@ -63,12 +68,20 @@ export default function BookingForm() {
   const luggageText = useMemo(() => luggageTypes.filter(([k]) => luggage[k]).map(([k, l]) => `${l} × ${luggage[k]}`).join(', '), [luggage]);
   const seatText = useMemo(() => SEATS.filter(([k]) => seats[k]).map(([k, l]) => `${l} × ${seats[k]}`).join(', '), [seats]);
 
-  const getEstimate = async () => {
-    if (!pickup || !dropoff) { setEst({ status: 'need', text: 'Enter a pickup and drop-off address first.' }); return; }
-    setEst({ status: 'loading', text: 'Calculating…' });
-    const r = await requestEstimate({ pickup, dropoff, stops: stops.filter(Boolean), vehicle: v.vehicle, roundTrip });
-    setEst(r);
-  };
+  // Live price: the driving distance comes from the route lookup, everything else from the pricing guide.
+  const byDistance = v.serviceType !== 'hourly' && !isTour;
+  const stopList = stops.filter(Boolean);
+  const route = useRoute({ pickup, dropoff, stops: stopList, vehicle: v.vehicle, roundTrip, enabled: byDistance });
+  const count = (keys) => keys.reduce((t, k) => t + (luggage[k] || 0), 0);
+  const q = quote({
+    km: route.status === 'ok' ? route.km : null,
+    vehicle: v.vehicle,
+    stops: stopList.length,
+    roundTrip,
+    extrasOnly: !byDistance,
+    extras: { meetGreet: isAirport && v.meetGreet, seats, wakeUpCall: v.wakeUpCall, assistBags: v.assistBags, pets: count(PET_KEYS), oversize: count(OVERSIZE_KEYS) },
+  });
+  const estimateText = `${q.exact ? 'Estimated total' : 'From'} ${money(q.total)} CAD${q.km ? ` (${q.km} km)` : ''}: ${q.lines.map((l) => `${l.label} ${money(l.amount)}`).join('; ')}`;
 
   const submit = (e) =>
     f.onSubmit(e, {
@@ -79,7 +92,8 @@ export default function BookingForm() {
       childSeats: seatText,
       tourPackage: isTour ? (tours.find((t) => t.slug === v.tourPackage)?.name || v.tourPackage) : '',
       airportDirection: isAirport ? (v.airportDirection === 'from' ? 'From YHZ to destination' : 'From pickup to YHZ') : '',
-      estimate: est?.amount ? est.text : '',
+      estimate: estimateText,
+      assistBags: { door: `Yes, to the door ($${ADDONS.assistBags})`, heavy: `Yes, stairs or 4+ heavy bags ($${ADDONS.assistBagsHeavy})` }[v.assistBags] || '',
       returnPickupAddress: roundTrip ? (diffReturn ? v.returnPickupAddress : dropoff) : '',
       returnDropoffAddress: roundTrip ? (diffReturn ? v.returnDropoffAddress : pickup) : '',
     });
@@ -126,7 +140,7 @@ export default function BookingForm() {
           </div>
         ))}
         {stops.length < 4 && (
-          <button type="button" onClick={() => setStops([...stops, ''])} className="justify-self-start text-sm font-semibold text-brand-700 sm:col-span-2">+ Add a stop <span className="font-normal text-ink-3">($5 per stop)</span></button>
+          <button type="button" onClick={() => setStops([...stops, ''])} className="justify-self-start text-sm font-semibold text-brand-700 sm:col-span-2">+ Add a stop <span className="font-normal text-ink-3">({money(PRICING.perStop)} per stop)</span></button>
         )}
         {isAirport && v.airportDirection === 'to' ? (
           <div className="sm:col-span-2 rounded-lg bg-band p-3 text-sm"><b>Drop-off:</b> {YHZ}</div>
@@ -170,53 +184,62 @@ export default function BookingForm() {
         <legend className="mb-3 text-lg font-semibold">3. Vehicle & passengers</legend>
         <div className="sm:col-span-2">
           <p className="label" id="vehicle-label">Preferred vehicle</p>
-          {(
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="radiogroup" aria-labelledby="vehicle-label">
-              {VEHICLES.map((x) => (
-                <label key={x} className={`cursor-pointer rounded-lg border p-3 text-center text-[15px] ${v.vehicle === x ? 'border-brand-700 bg-brand-50 font-semibold' : 'border-line'}`}>
-                  <input type="radio" name="vehicle" value={x} checked={v.vehicle === x} onChange={f.set('vehicle')} className="sr-only" />
-                  {x}
-                  <span className="mt-1 block text-xs font-normal text-ink-3">{vehicles.filter((m) => m.cls === x).map((m) => m.model).join(', ')}</span>
-                </label>
-              ))}
-            </div>
-          )}
+          <div className="space-y-4" role="radiogroup" aria-labelledby="vehicle-label">
+            {CLASSES.map((c) => (
+              <div key={c}>
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-3">{c}</p>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {VEHICLES.filter((x) => x.cls === c).map((x) => (
+                    <label key={x.model} className={`cursor-pointer rounded-lg border p-3 text-[15px] transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand-700 ${v.vehicle === x.model ? 'border-brand-700 bg-brand-50 font-semibold' : 'border-line hover:border-white/30'}`}>
+                      <input type="radio" name="vehicle" value={x.model} checked={v.vehicle === x.model} onChange={f.set('vehicle')} className="sr-only" />
+                      {x.model}
+                      <span className="mt-1 block text-xs font-normal text-ink-3">Up to {x.pax} · {x.surcharge ? `+${money(x.surcharge)}` : 'no surcharge'}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         <p className="hint -mt-2 sm:col-span-2">Vehicle selection depends on availability.</p>
         <Select f={f} name="passengers" label="Passengers" required options={['1', '2', '3', '4', '5', '6', '7', '8+']} />
-        {isAirport && (
-          <div className="sm:col-span-2">
-            <p className="label">Luggage</p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {luggageTypes.map(([k, l]) => <Counter key={k} label={l} value={luggage[k] || 0} onChange={(n) => setLuggage({ ...luggage, [k]: n })} />)}
-            </div>
+        <div className="sm:col-span-2">
+          <p className="label">Luggage <span className="font-normal text-ink-3">(standard bags are free)</span></p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {luggageTypes.map(([k, l]) => <Counter key={k} label={`${l}${luggagePrice(k) ? ` (+${money(luggagePrice(k))} each)` : ''}`} value={luggage[k] || 0} onChange={(n) => setLuggage({ ...luggage, [k]: n })} />)}
           </div>
-        )}
+        </div>
       </fieldset>
 
       <fieldset className="grid gap-3">
-        <legend className="mb-3 text-lg font-semibold">4. Extras <span className="text-sm font-normal text-ink-3">(charges may apply, from $10)</span></legend>
-        {isAirport && <Check f={f} name="meetGreet">Meet & greet: your driver waits inside arrivals with a name sign</Check>}
+        <legend className="mb-3 text-lg font-semibold">4. Extras <span className="text-sm font-normal text-ink-3">(charges may apply)</span></legend>
+        {isAirport && <Check f={f} name="meetGreet">Meet & greet ({money(ADDONS.meetGreet)}): your driver parks and waits inside arrivals with a name sign</Check>}
         <div>
           <p className="label">Child / booster seats</p>
           <div className="grid gap-2 sm:grid-cols-3">
-            {SEATS.map(([k, l]) => <Counter key={k} label={l} value={seats[k] || 0} onChange={(n) => setSeats({ ...seats, [k]: n })} />)}
+            {SEATS.map(([k, l, price]) => <Counter key={k} label={`${l} (${money(price)})`} value={seats[k] || 0} onChange={(n) => setSeats({ ...seats, [k]: n })} />)}
           </div>
         </div>
-        <Check f={f} name="wakeUpCall">Wake-up call ($5)</Check>
-        <Check f={f} name="assistBags">Assist with bags</Check>
+        <Check f={f} name="wakeUpCall">Wake-up call ({money(ADDONS.wakeUpCall)})</Check>
+        <Select f={f} name="assistBags" label="Assist with bags" placeholder="No thanks" options={[['door', `To the door (${money(ADDONS.assistBags)})`], ['heavy', `Stairs, or 4 or more heavy bags (${money(ADDONS.assistBagsHeavy)})`]]} className="sm:max-w-sm" />
       </fieldset>
 
-      <div className="rounded-xl border border-line bg-band p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="font-semibold">Estimated fare</p>
-            <p className="text-sm text-ink-3">Based on driving distance. Not a final invoice.</p>
-          </div>
-          <button type="button" onClick={getEstimate} className="btn-dark">Get estimate</button>
+      <div className="rounded-xl border border-line bg-band p-5 sm:p-6">
+        <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+          <p className="text-lg font-semibold">Your price</p>
+          <p className="text-sm text-ink-3">{byDistance ? `$${PRICING.perKm}/km, $${PRICING.minimumFare} minimum, plus vehicle surcharge` : 'Extras you’ve picked'}</p>
         </div>
-        {est && <p className="mt-3 text-[15px]" aria-live="polite">{est.amount ? <b className="text-xl">{est.text}</b> : est.text}</p>}
-        <p className="mt-3 text-xs text-ink-3">Price may vary if an SUV or van is selected, and with traffic, time of day, waiting time, extra services, luggage and vehicle availability. Each added stop is +$5. See <Link to="/schedule/">all prices</Link>.</p>
+        {byDistance && route.status === 'loading' && <p className="mb-2 text-sm text-ink-3">Measuring your route…</p>}
+        {q.lines.length ? (
+          <QuoteBreakdown
+            q={q}
+            minutes={route.status === 'ok' ? route.minutes : null}
+            note={!byDistance ? `${v.serviceType === 'hourly' ? 'Hourly' : 'Tour'} prices are confirmed by our team; these extras are added.` : route.status === 'unavailable' ? 'We couldn’t measure this route automatically, so we’ll confirm the exact fare with you.' : roundTrip && diffReturn ? 'The return leg is priced as the same distance; we’ll adjust if your return addresses differ.' : undefined}
+          />
+        ) : (
+          <p className="text-[15px] text-ink-3">Hourly and tour prices are confirmed by our team. Any extras you add will appear here.</p>
+        )}
+        <p className="mt-3 text-xs text-ink-3">{WAITING_TERMS} Gratuity not included. See <Link to="/schedule/">all prices</Link>.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -225,7 +248,7 @@ export default function BookingForm() {
       </div>
 
       <Check f={f} name="agreeTerms" required>
-        I agree to the <Link to="/refund-policy/">Terms of Service and Refund Policy</Link>.
+        I agree to the <Link to="/refund-policy/">Terms of Service and Refund Policy</Link>, and that waiting time beyond the free waiting period ({PRICING.waiting.freeAirportMin} minutes after landing for airport pickups, {PRICING.waiting.freeOtherMin} minutes for other pickups) is billed at ${PRICING.waiting.perMinute.toFixed(2)} per minute and added to my fare, along with any additional services used during the ride.
       </Check>
 
       <FormStatus f={f} />

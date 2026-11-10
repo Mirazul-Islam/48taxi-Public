@@ -1,32 +1,10 @@
 import { Link } from 'react-router-dom';
 import { PageHero, Section, Pic, Checklist, Faq, CtaBand, Reviews, Icon } from '../components/ui.jsx';
-import { FareEstimator } from '../components/Forms.jsx';
-import { airportFares, airportZones, airportToHRM, longDistanceNS, longDistanceNBPEI, fareNotes, extras, hourly, groupDiscount, perPerson, money } from '../data/fares.js';
+import { FareEstimator, FareFormula, VehicleTable, AddonTable, WaitingTable } from '../components/Pricing.jsx';
+import { fareNotes, hourly, groupDiscount, perPerson, money } from '../data/fares.js';
 import { getaways, vehicles } from '../data/content.js';
 import { faqsFor } from '../lib/seo.js';
 import { business, telHref } from '../data/site.js';
-
-export function AirportFareTable({ caption }) {
-  return (
-    <div className="overflow-x-auto rounded-xl border border-line">
-      <table className="table min-w-[560px]">
-        {caption && <caption className="sr-only">{caption}</caption>}
-        <thead>
-          <tr><th>Destination</th><th className="text-right">To airport<br /><span className="normal-case">Sedan / SUV</span></th><th className="text-right">From airport<br /><span className="normal-case">Sedan / SUV</span></th></tr>
-        </thead>
-        <tbody>
-          {airportFares.map((a) => (
-            <tr key={a.area}>
-              <td><span className="font-medium">{a.area}</span>{a.note && <span className="block text-sm text-ink-3">{a.note}</span>}</td>
-              <td className="text-right tabular-nums">{money(a.toAirport.SED)}+ / {money(a.toAirport.SUV)}+</td>
-              <td className="text-right tabular-nums">{money(a.fromAirport.SED)}+ / {money(a.fromAirport.SUV)}+</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 const pickupSteps = [
   ['yhz-baggage-claim', 'Baggage claim', 'Collect your luggage in the arrivals area.'],
@@ -54,18 +32,19 @@ export function AirportTaxi() {
   return (
     <>
       <PageHero path={path} eyebrow="Halifax Stanfield International Airport (YHZ)" title="Halifax airport taxi to and from YHZ" img="airport-traveller" imgAlt="Traveller with a suitcase walking to a waiting car at Halifax Stanfield airport">
-        Pre-booked, flat-rate airport taxis between Halifax Stanfield and Halifax, Dartmouth, Bedford, Sackville and the rest of Nova Scotia. We track your flight, wait if you’re delayed, and can meet you inside arrivals with a name sign.
+        Pre-booked airport taxis between Halifax Stanfield and Halifax, Dartmouth, Bedford, Sackville and the rest of Nova Scotia. We track your flight, wait if you’re delayed, and can meet you inside arrivals with a name sign.
       </PageHero>
-      <Section title="Halifax airport taxi fares" intro={`${fareNotes.payment} Prices are “from” fares; see notes below the table.`}>
-        <AirportFareTable caption="Flat taxi fares to and from Halifax Stanfield Airport by area" />
+      <Section title="Halifax airport taxi fares" intro={`Every airport fare is worked out from the driving distance, and you see the full price before you book. ${fareNotes.payment}`}>
+        <FareFormula />
+        <div className="mt-6"><FareEstimator defaultTo="Halifax Stanfield International Airport" /></div>
         <p className="mt-4 text-sm text-ink-3">{fareNotes.general}</p>
         <div className="mt-6 flex flex-wrap gap-3"><Link to="/book-now/?service=airport" className="btn-primary">Book an airport taxi</Link><Link to="/schedule/" className="btn-ghost">Estimate my fare</Link></div>
       </Section>
       <Section title="Why travellers book 48Taxi for YHZ" className="bg-band">
         <div className="grid gap-8 lg:grid-cols-2">
           <Checklist className="text-[17px]" items={[
-            'Flat fares agreed before you travel: no meter, no surge',
-            'Flight tracking: we adjust for early and late arrivals at no extra charge',
+            'Your price is shown before you book: $2 per km, $48 minimum, no surge',
+            'Flight tracking, and 30 minutes of free waiting after your flight lands',
             'Meet & greet with a name sign inside arrivals, on request',
             'Infant seats, highback and backless boosters available',
             'Sedans, SUVs (Suburban, Escalade) and minivans for families and groups',
@@ -85,7 +64,7 @@ export function AirportTaxi() {
       </Section>
       <Reviews only={['Tom Howard', 'barb c', 'Dania Dabbas']} title="Recent airport rides" />
       <Faq items={faqsFor(path)} />
-      <CtaBand title="Flying soon? Lock in your airport fare." />
+      <CtaBand title="Flying soon? Book your airport ride." />
     </>
   );
 }
@@ -96,7 +75,7 @@ export function AirportShuttle() {
   return (
     <>
       <PageHero path={path} eyebrow="Halifax airport shuttle alternatives" title="Halifax airport shuttle, door to door" img="chauffeur-door" imgAlt="Chauffeur opening a car door for a passenger">
-        Skip the shuttle stops and bus schedules. Ride door to door to Halifax Stanfield with per-person group fares, a flat-rate private car, or a family SUV with room for everyone’s luggage.
+        Skip the shuttle stops and bus schedules. Ride door to door to Halifax Stanfield with per-person group fares, a private car, or a family SUV with room for everyone’s luggage.
       </PageHero>
       <Section title="Per-person airport fares" intro="Within our standard coverage area; additional fees apply outside it.">
         <div className="grid gap-5 md:grid-cols-3">
@@ -108,7 +87,7 @@ export function AirportShuttle() {
       <Section title="Three ways to get to YHZ" className="bg-band">
         <div className="grid gap-5 md:grid-cols-3">
           {[
-            ['Private airport taxi', 'Flat fares from $60 from Halifax, Dartmouth, Bedford and Sackville. Your car, your schedule.', '/halifax-airport-taxi/', 'Airport taxi fares'],
+            ['Private airport taxi', 'Priced by distance at $2 per km with a $48 minimum. Your car, your schedule.', '/halifax-airport-taxi/', 'Airport taxi fares'],
             ['Return trips', 'Book both ways at once: we reverse your addresses and track your return flight too.', '/book-now/?service=airport', 'Book a return trip'],
             ['Group & family rides', 'Suburbans and minivans for 6–7 passengers with luggage. Up to 20% off outside HRM for groups.', '/book-now/?service=airport', 'Book a group ride'],
           ].map(([t, d, to, l]) => (
@@ -150,18 +129,22 @@ export function ServicesRates() {
   const path = '/services-rates/';
   return (
     <>
-      <PageHero path={path} eyebrow="Services & rates" title="Halifax airport taxi rates by area">
-        Your trusted taxi partner in Halifax &amp; Dartmouth. Taxi fares to and from Halifax Stanfield Airport, with cash and all credit and debit cards accepted.
+      <PageHero path={path} eyebrow="Services & rates" title="Halifax taxi and airport rates">
+        Your trusted taxi partner in Halifax &amp; Dartmouth. Every fare is calculated the same way, from the driving distance and the vehicle you choose, with cash and all credit and debit cards accepted.
       </PageHero>
-      <Section title="Taxi fares to & from Halifax airport">
-        <AirportFareTable caption="Taxi fares to and from Halifax airport, sedan and SUV" />
-        <div className="mt-5 space-y-2 text-[15px] text-ink-2"><p>{fareNotes.general}</p><p>{fareNotes.fuel}</p></div>
+      <Section title="How fares are calculated">
+        <FareFormula />
+        <h3 className="mt-12 text-xl font-semibold">Vehicle surcharges and example fares</h3>
+        <div className="mt-4"><VehicleTable /></div>
+        <p className="mt-5 text-[15px] text-ink-2">{fareNotes.general}</p>
       </Section>
-      <Section title="Extras, waiting time and hourly rates" className="bg-band">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="card"><h3 className="font-semibold">Extra charges</h3><dl className="mt-3 divide-y divide-line">{extras.map(([k, v]) => <div key={k} className="flex justify-between py-2"><dt>{k}</dt><dd className="font-semibold">{v}</dd></div>)}</dl></div>
-          <div className="card"><h3 className="font-semibold">Long distance &amp; hourly</h3><dl className="mt-3 divide-y divide-line">{hourly.map(([k, v]) => <div key={k} className="flex justify-between py-2"><dt>{k}</dt><dd className="font-semibold">{v}</dd></div>)}</dl>
-            <p className="mt-4 text-sm text-ink-3">Prices can change for early morning, rush hour, closed bridge, immediate pickups, weather, extra luggage and extra passengers.</p></div>
+      <Section title="Additional services, waiting time and hourly rates" className="bg-band">
+        <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+          <div><h3 className="mb-3 font-semibold">Additional services</h3><AddonTable /></div>
+          <div className="space-y-6">
+            <div><h3 className="mb-3 font-semibold">Waiting time</h3><WaitingTable /></div>
+            <div className="card"><h3 className="font-semibold">Hourly charters</h3><dl className="mt-3 divide-y divide-line">{hourly.map(([k, v]) => <div key={k} className="flex justify-between py-2"><dt>{k}</dt><dd className="font-semibold">{v}</dd></div>)}</dl></div>
+          </div>
         </div>
       </Section>
       <Section title="Group discounts">
@@ -194,61 +177,36 @@ export function ServicesRates() {
 }
 
 /* ---------------- /schedule/ = Prices (existing) ---------------- */
-function PlaceTable({ rows, title }) {
-  return (
-    <div className="overflow-hidden rounded-xl border border-line">
-      <table className="table">
-        <caption className="bg-band px-3 py-2.5 text-left font-semibold">{title}</caption>
-        <thead><tr><th>Destination</th><th className="text-right">Fare from YHZ</th></tr></thead>
-        <tbody>{rows.map((r) => <tr key={r.place}><td>{r.place}</td><td className="text-right tabular-nums">{money(r.fare)}</td></tr>)}</tbody>
-      </table>
-    </div>
-  );
-}
-
 export function Prices() {
   const path = '/schedule/';
-  const half = Math.ceil(longDistanceNS.length / 2);
   return (
     <>
       <PageHero path={path} eyebrow="Prices" title="Halifax taxi, limo and airport prices">
-        How much is a taxi or limo in Halifax? Estimate your fare to or from Halifax Stanfield Airport (YHZ), see flat airport fares by area, long distance fares across Nova Scotia, New Brunswick and PEI, and our hourly limo rates.
+        How much is a taxi or limo in Halifax? Every trip is priced the same way: $2 per km with a $48 minimum, plus a surcharge for the vehicle you choose. Enter your trip below to see your fare, or browse the full price list.
       </PageHero>
-      <Section title="Fare estimator" intro="Instantly estimate your fare to or from Halifax Stanfield Airport, or for any point-to-point trip.">
+      <Section title="Fare estimator" intro="Your fare is worked out from the driving distance. Enter both addresses, or type the distance in km.">
         <FareEstimator />
-        <p className="mt-4 text-sm text-ink-3">{fareNotes.general} {fareNotes.fuel}</p>
       </Section>
-      <Section id="long-distance" title="Long distance fares from Halifax Stanfield" intro={fareNotes.longDistance} className="bg-band">
-        <div className="grid gap-5 lg:grid-cols-3">
-          <PlaceTable title="Nova Scotia (A–L)" rows={longDistanceNS.slice(0, half)} />
-          <PlaceTable title="Nova Scotia (L–Y)" rows={longDistanceNS.slice(half)} />
-          <PlaceTable title="New Brunswick & PEI" rows={longDistanceNBPEI} />
+      <Section title="How every fare is calculated" className="bg-band">
+        <FareFormula />
+        <h3 className="mt-12 text-xl font-semibold">Vehicle surcharges and example fares</h3>
+        <div className="mt-4"><VehicleTable /></div>
+        <p className="mt-5 text-[15px] text-ink-2">{fareNotes.general}</p>
+      </Section>
+      <Section id="long-distance" title="Long distance across Nova Scotia, NB and PEI" intro={fareNotes.longDistance} tight>
+        <p className="max-w-3xl text-ink-2">Use the fare estimator above with your destination, for example Wolfville, Lunenburg, Truro, Antigonish or Sydney, or <Link to="/book-now/">send us your trip</Link> and we’ll confirm the price.</p>
+      </Section>
+      <Section title="Additional services, waiting time and hourly rates" className="bg-band">
+        <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+          <div><h3 className="mb-3 font-semibold">Additional services</h3><AddonTable /></div>
+          <div className="space-y-6">
+            <div><h3 className="mb-3 font-semibold">Waiting time</h3><WaitingTable /></div>
+            <div className="card"><h3 className="font-semibold">Hourly charters</h3><dl className="mt-3 divide-y divide-line">{hourly.map(([k, v]) => <div key={k} className="flex justify-between gap-3 py-2"><dt>{k}</dt><dd className="font-semibold">{v}</dd></div>)}</dl></div>
+            <div className="card"><h3 className="font-semibold">Groups save up to 20%</h3><p className="mt-3 text-ink-2">{groupDiscount.text}</p><ul className="mt-3 flex flex-wrap gap-1.5">{groupDiscount.groups.map((g) => <li key={g} className="chip">{g}</li>)}</ul></div>
+          </div>
         </div>
       </Section>
-      <Section id="rates-to-airport" title="Rates to the airport by zone">
-        <div className="overflow-x-auto rounded-xl border border-line">
-          <table className="table min-w-[560px]">
-            <thead><tr><th>Area</th><th>Details</th><th className="text-right">Rate</th></tr></thead>
-            <tbody>{airportZones.map((z, i) => <tr key={i}><td className="font-medium">{z.area}</td><td className="text-ink-2">{z.details}</td><td className="text-right tabular-nums">{money(z.fare)}</td></tr>)}</tbody>
-          </table>
-        </div>
-      </Section>
-      <Section id="airport-to-hrm" title="Halifax airport to HRM" className="bg-band">
-        <div className="overflow-hidden rounded-xl border border-line bg-card">
-          <table className="table">
-            <thead><tr><th>Area</th><th className="text-right">Fare</th></tr></thead>
-            <tbody>{airportToHRM.map((z) => <tr key={z.area}><td>{z.area}</td><td className="text-right tabular-nums">{z.fare}</td></tr>)}</tbody>
-          </table>
-        </div>
-      </Section>
-      <Section title="Hourly, extras and group discounts">
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="card"><h3 className="font-semibold">Hourly &amp; per km</h3><dl className="mt-3 divide-y divide-line">{hourly.map(([k, v]) => <div key={k} className="flex justify-between gap-3 py-2"><dt>{k}</dt><dd className="font-semibold">{v}</dd></div>)}</dl></div>
-          <div className="card"><h3 className="font-semibold">Extras</h3><dl className="mt-3 divide-y divide-line">{extras.map(([k, v]) => <div key={k} className="flex justify-between gap-3 py-2"><dt>{k}</dt><dd className="font-semibold">{v}</dd></div>)}</dl></div>
-          <div className="card"><h3 className="font-semibold">Groups save up to 20%</h3><p className="mt-3 text-ink-2">{groupDiscount.text}</p><ul className="mt-3 flex flex-wrap gap-1.5">{groupDiscount.groups.map((g) => <li key={g} className="chip">{g}</li>)}</ul></div>
-        </div>
-      </Section>
-      <CtaBand title="Ready to book?" text="Send your trip details and we’ll confirm your fare." />
+      <CtaBand title="Ready to book?" text="Send your trip details and we’ll confirm your ride." />
     </>
   );
 }

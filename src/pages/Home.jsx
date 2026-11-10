@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Pic, Icon, Arrow, CtaBand, Ratings, BookButton, CallButton, Stars, MaskTitle } from '../components/ui.jsx';
 import { popularServices, golf, hotels, reviews, tours } from '../data/content.js';
-import { airportFares, perPerson, money, longDistanceNS } from '../data/fares.js';
+import { perPerson, money } from '../data/fares.js';
+import { PRICING, VEHICLES, EXAMPLE_TRIPS, tripFare } from '../lib/pricing.js';
 import { business } from '../data/site.js';
 import DoorScene from '../components/DoorScene.jsx';
 
@@ -84,8 +85,8 @@ function Hero() {
               delay={200}
             />
             <p className="lede fade-up mt-7 max-w-xl" style={{ '--d': '550ms' }}>
-              A locally owned taxi and chauffeur company. Flat-rate rides to Halifax Stanfield, private tours, and
-              long-distance trips across Nova Scotia, any hour of the day.
+              A locally owned taxi and chauffeur company. Rides to Halifax Stanfield, private tours, and
+              long-distance trips across Nova Scotia, any hour of the day, with the price shown before you book.
             </p>
           </div>
           <Badge />
@@ -120,8 +121,8 @@ function Stats() {
   const stats = [
     { n: 4.9, dec: true, suf: '', label: 'Google rating', note: 'from real riders' },
     { n: 24, suf: '/7', label: 'Dispatch & rides', note: 'red-eyes included' },
-    { n: 60, pre: '$', suf: '', label: 'Flat airport fares from', note: 'no meter, no surge' },
-    { n: longDistanceNS.length + 19, suf: '', label: 'Fixed-fare destinations', note: 'NS, NB & PEI' },
+    { n: PRICING.minimumFare, pre: '$', suf: '', label: 'Minimum fare', note: `then $${PRICING.perKm}/km, no surge` },
+    { n: PRICING.waiting.freeAirportMin, suf: ' min', label: 'Free airport waiting', note: 'after your flight lands' },
   ];
   return (
     <section className="border-y border-white/[0.06]">
@@ -190,39 +191,56 @@ function Services() {
   );
 }
 
-/* Airport: Lenox-style "flat rates" route list (will be driven by the fare formula) */
-function AirportRates() {
-  const rows = airportFares.slice(0, 9);
+/* Pricing: the fare formula, worked examples and a live distance slider */
+function FareSection() {
+  const [km, setKm] = useState(38);
+  const base = VEHICLES.filter((v, i, all) => all.findIndex((x) => x.cls === v.cls) === i); // cheapest of each class
   return (
     <section className="relative isolate overflow-hidden border-y border-white/[0.06] bg-night py-24 sm:py-32">
       <div aria-hidden="true" className="absolute -left-40 top-20 -z-10 h-[500px] w-[500px] rounded-full bg-brand-700/10 blur-[110px]" />
       <div className="wrap grid gap-16 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <p className="eyebrow" data-reveal="fade"><span className="num">02</span>Halifax Stanfield</p>
-          <h2 className="h-section mt-5" data-reveal>Flat rates, settled <em>before</em> the car moves.</h2>
-          <p className="lede mt-6" data-reveal>A pre-booked Halifax taxi to the airport with the price agreed up front. We track your flight, wait if you land late, and can meet you inside arrivals with your name on a sign.</p>
+          <p className="eyebrow" data-reveal="fade"><span className="num">02</span>Honest pricing</p>
+          <h2 className="h-section mt-5" data-reveal>${PRICING.perKm} a kilometre. <em>Shown before you book.</em></h2>
+          <p className="lede mt-6" data-reveal>Every fare is the higher of ${PRICING.minimumFare} or ${PRICING.perKm} × km, plus a small surcharge for bigger or premium vehicles. No meter, no surge. The booking form adds it all up for you, extras included.</p>
           <div className="mt-8 overflow-hidden rounded-[24px]" data-wipe>
             <Pic name="airport-meet-greet" alt="48Taxi chauffeur waiting with a welcome sign in the arrivals hall at Halifax Stanfield" sizes="(min-width: 1024px) 520px, 100vw" imgClass="aspect-[3/2] h-auto w-full object-cover" />
           </div>
         </div>
         <div>
-          <div className="flex items-center justify-between border-b border-white/10 pb-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-3">
-            <span>Route</span><span>Sedan, from</span>
+          <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-6 sm:p-8" data-reveal>
+            <div className="flex items-baseline justify-between gap-4">
+              <label htmlFor="km-slider" className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-3">Try a distance</label>
+              <p className="display text-4xl text-white"><span className="tabular-nums">{km}</span> km</p>
+            </div>
+            <input id="km-slider" type="range" min="2" max="150" value={km} onChange={(e) => setKm(+e.target.value)} className="mt-4 w-full accent-brand-700" />
+            <ul className="mt-6">
+              {base.map((v) => (
+                <li key={v.cls} className="flex items-baseline gap-4 border-b border-white/[0.07] py-4 last:border-b-0">
+                  <span className="text-[17px] text-white">{v.cls} <span className="text-ink-3">· {v.model}</span></span>
+                  <span aria-hidden="true" className="flex-1 translate-y-[-4px] border-b border-dotted border-white/15" />
+                  <span className="display text-3xl tabular-nums text-white">{money(tripFare(km, v.model))}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-10 flex items-center justify-between border-b border-white/10 pb-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-3">
+            <span>Example trip</span><span>Corolla / Camry</span>
           </div>
           <ul>
-            {rows.map((a, i) => (
-              <li key={a.area} className="group flex items-baseline gap-4 border-b border-white/[0.07] py-5" data-reveal style={{ '--d': `${i * 50}ms` }}>
-                <span className="text-[17px] text-white transition-colors group-hover:text-brand-700">{a.area} <span className="text-ink-3">→ YHZ</span></span>
+            {EXAMPLE_TRIPS.map((t, i) => (
+              <li key={t.km} className="group flex items-baseline gap-4 border-b border-white/[0.07] py-5" data-reveal style={{ '--d': `${i * 60}ms` }}>
+                <span className="text-[17px] text-white transition-colors group-hover:text-brand-700">{t.label} <span className="text-ink-3">· {t.km} km</span></span>
                 <span aria-hidden="true" className="flex-1 translate-y-[-4px] border-b border-dotted border-white/15" />
-                <span className="display text-3xl text-white">{money(a.toAirport.SED)}</span>
+                <span className="display text-3xl text-white">{money(tripFare(t.km, 'Toyota Camry'))}</span>
               </li>
             ))}
           </ul>
           <div className="mt-10 flex flex-wrap gap-3" data-reveal>
-            <Link to="/halifax-airport-taxi/" className="btn-primary">Book an airport ride <Arrow /></Link>
-            <Link to="/services-rates/" className="btn-ghost">Every area & SUV rates</Link>
+            <Link to="/book-now/" className="btn-primary">See my exact fare <Arrow /></Link>
+            <Link to="/services-rates/" className="btn-ghost">Every vehicle & extra</Link>
           </div>
-          <p className="mt-6 text-sm text-ink-3">Prices before applicable surcharges; see <Link to="/schedule/">all prices</Link>.</p>
+          <p className="mt-6 text-sm text-ink-3">Extra stops ${PRICING.perStop}. Airport pickups include {PRICING.waiting.freeAirportMin} minutes of free waiting after landing. See <Link to="/schedule/">all prices</Link>.</p>
         </div>
       </div>
     </section>
@@ -231,11 +249,11 @@ function AirportRates() {
 
 /* Fleet: horizontal scroll-snap slider with arrow controls */
 const FLEET = [
-  { cls: 'Executive Sedan', models: 'Toyota Camry · Lincoln MKS', pax: 3, use: 'Airport runs & business travel', img: 'chauffeur-door' },
-  { cls: 'Mid-size SUV', models: 'Toyota Highlander · Lincoln MKX', pax: 5, use: 'Families & winter roads', img: 'airport-traveller' },
-  { cls: 'Full-size SUV', models: 'Cadillac Escalade · Chevy Suburban', pax: 6, use: 'Groups, golf bags, VIP', img: 'driver-cockpit' },
-  { cls: 'Minivan', models: 'Honda Odyssey · Dodge Caravan', pax: 6, use: 'Groups with luggage', img: 'passenger-call' },
-]; // TODO(owner): confirm passenger capacity per class and send real fleet photos.
+  { cls: 'Sedan', models: 'Toyota Corolla · Camry · Lincoln MKS', pax: 4, from: '+$0–15', use: 'Airport runs & business travel', img: 'chauffeur-door' },
+  { cls: 'Mid-size SUV', models: 'Toyota Highlander · Lincoln MKX', pax: 6, from: '+$10–15', use: 'Families & winter roads', img: 'airport-traveller' },
+  { cls: 'Full-size SUV', models: 'Chevy Suburban · Cadillac Escalade', pax: 7, from: '+$25–40', use: 'Groups, golf bags, VIP', img: 'driver-cockpit' },
+  { cls: 'Minivan', models: 'Dodge Caravan · Honda Odyssey', pax: 7, from: '+$10', use: 'Groups with luggage', img: 'passenger-call' },
+]; // Seating and surcharges from the pricing guide (src/lib/pricing.js). TODO(owner): send real fleet photos.
 
 function Fleet() {
   const ref = useRef(null);
@@ -260,8 +278,9 @@ function Fleet() {
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-700">0{i + 1}</p>
               <h3 className="display mt-2 text-4xl">{f.cls}</h3>
               <p className="mt-1 text-[15px] text-ink-3">{f.models}</p>
-              <div className="mt-6 flex items-center gap-5 border-t border-white/[0.08] pt-5 text-sm text-ink-2">
+              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/[0.08] pt-5 text-sm text-ink-2">
                 <span className="flex items-center gap-2"><Icon name="user" className="h-4 w-4 text-brand-700" />Up to {f.pax}</span>
+                <span className="tabular-nums text-brand-700">{f.from}</span>
                 <span className="flex items-center gap-2"><Icon name="sparkle" className="h-4 w-4 text-brand-700" />{f.use}</span>
               </div>
             </div>
@@ -407,7 +426,7 @@ export default function Home() {
       </div>
       <Stats />
       <Services />
-      <AirportRates />
+      <FareSection />
       <Fleet />
       <HowItWorks />
       <Tours />

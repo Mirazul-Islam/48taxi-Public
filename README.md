@@ -25,7 +25,7 @@ count-up stats, marquees and smooth scrolling (all motion respects reduced-motio
 - 301 redirects in `netlify.toml` for WordPress leftovers (`/feed/`, `/wp-content/…`, old fare PDFs, `/sitemap.rss`, …) and friendly aliases (`/prices/`, `/tours/`, `/park-and-fly/` …).
 - **Forms** (booking, contact, affiliate) are stored by Netlify Forms, with a honeypot to filter spam.
 - **Functions:**
-  - `fare-estimate` uses the Google Routes API when a key is set. Without a key, the site falls back to the published flat airport fares by area.
+  - `fare-estimate` gets the driving distance from the Google Routes API when a key is set. Without a key, riders can type the distance in the estimator, and the booking form shows a "from" price that the team confirms.
   - `submission-created` can email each form submission through Resend.
 
 ## Homepage door scene (scroll animation)
@@ -76,7 +76,7 @@ npm run preview    # serves dist/ like Netlify (gzip, pretty URLs, 404) on :4173
 
    | Variable | Purpose |
    |---|---|
-   | `GOOGLE_MAPS_API_KEY` | Exact distance-based quotes in the fare estimator. Enable the Routes API, and restrict the key to that API. |
+   | `GOOGLE_MAPS_API_KEY` | **Needed for automatic prices.** Measures the driving distance so the booking form and estimator show the exact fare. Enable the Routes API, and restrict the key to that API. |
    | `RESEND_API_KEY`, `NOTIFY_EMAIL`, `FROM_EMAIL` | Email every submission to your inbox via Resend. `FROM_EMAIL` must be on a domain you verified in Resend. |
    | `SEND_CONFIRMATION=true` | Also email the customer a copy. |
 4. Test on the `*.netlify.app` URL first: book a test ride and check it appears under Forms.
@@ -98,14 +98,14 @@ These are taken from the current site, but they conflict or are unclear:
 1. **Address:** footer and schema use **344 Sackville Drive, Lower Sackville, NS** (the Park & Fly yard). Is this the business address you want on Google?
 2. **Hours:** the site says 24/7, but the old schema said Mon–Sun 09:00–17:00. This build uses **24/7**.
 3. **Main phone:** (902) 789-7777 is primary, with (902) 488-8882 and 1 (866) 482-9090 shown as secondary numbers.
-4. **Fare estimator formula** (`netlify/lib/pricing.mjs`): $1.70/km, $60 minimum, SUV/van +20–25%, +$5 per stop. Please match it to your real pricing.
+4. **Pricing** follows the November 2026 pricing guide and lives in one file, `src/lib/pricing.js`: the higher of $48 or $2/km plus the vehicle surcharge, extras, and waiting time. The old flat fare tables (by area, by zone, and long distance) were removed. Not covered by the guide, so kept as they were: hourly rates ($70 sedan / $95 SUV), the 15% minimum gratuity on prepaid and billed trips, and the 20% group discount outside HRM. Taxes aren't mentioned in the guide, so the site doesn't say whether HST is included.
 5. **Per-person fares ($20 / $30 / $60, cash):** the homepage didn't say what they apply to. They're shown here as airport per-person fares.
-6. **Three airport fare tables disagree** (Services & Rates vs the Prices tabs, for example Halifax $60+ vs $59.75 vs $63). All three are kept as they were. Pick one and the others can be removed.
+6. **Charging extras after the ride (Stripe)** from the pricing guide isn't built yet. Until it is, the booking form's consent says waiting time and extras are "added to my fare"; switch to the guide's "charged to my card on file" wording once cards are saved at booking.
 7. **Hotel list** on the homepage and Corporate page: confirm each is a current partner.
 8. **Refund policy contact** lists `48taxii@gmail.com`; everywhere else uses `info@48taxi.co`.
 9. **Address:** the footer and schema still use 344 Sackville Drive (the former Park & Fly yard). Confirm the business address to show now that Park & Fly is gone.
 10. **Privacy policy** still has a section on the Park & Fly lot cameras; remove it if the lot is no longer used.
-11. **Fleet capacities** on the homepage (sedan 3, mid-size SUV 5, full-size SUV 6, minivan 6) and real fleet photos.
+11. **Fleet photos:** seating now follows the pricing guide (confirm against each vehicle's actual setup); real fleet photos are still needed.
 12. **Careers:** "Application deadline: May 1" has no year.
 
 ## Project layout
@@ -114,7 +114,8 @@ These are taken from the current site, but they conflict or are unclear:
 src/
   meta.js            one entry per URL: title, description, schema types
   routes.jsx         URL → page component (each page group is its own JS chunk)
-  data/              business facts (site.js), fares, tours, reviews, FAQs, areas, legal text
+  lib/pricing.js     ALL prices: fare formula, vehicle surcharges, extras, waiting time
+  data/              business facts (site.js), tours, reviews, FAQs, areas, legal text
   components/        layout, UI kit, booking + other forms
   pages/             page components
   lib/seo.js         <head> tags + JSON-LD

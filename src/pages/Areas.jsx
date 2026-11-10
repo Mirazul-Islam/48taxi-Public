@@ -2,16 +2,16 @@ import { Link } from 'react-router-dom';
 import { PageHero, Section, Checklist, Faq, CtaBand, Reviews, Pic } from '../components/ui.jsx';
 import { areaPages } from '../data/areas.js';
 import { faqsFor } from '../lib/seo.js';
-import { longDistanceNS, money } from '../data/fares.js';
+import { FareEstimator, FareFormula } from '../components/Pricing.jsx';
 import { business } from '../data/site.js';
 
 export function AreasHub() {
   const path = '/service-areas/';
-  const featured = ['Lunenburg', 'Wolfville', 'Kentville', 'Antigonish', 'New Glasgow', 'Bridgewater', 'Yarmouth', 'Sydney'];
+  const featured = ['Lunenburg', 'Wolfville', 'Kentville', 'Truro', 'Antigonish', 'New Glasgow', 'Bridgewater', 'Yarmouth', 'Sydney', 'Moncton, NB', 'Charlottetown, PEI'];
   return (
     <>
       <PageHero path={path} eyebrow="Where we drive" title="Taxi service areas across Nova Scotia" img="nova-scotia-service-map" imgAlt="Map of Nova Scotia showing Halifax, Truro, Wolfville, New Glasgow, Antigonish, Bridgewater and Sydney">
-        Based in Halifax and open 24/7, we cover the whole Halifax Regional Municipality with flat airport fares and drive anywhere in Nova Scotia, New Brunswick and PEI with fixed long distance fares.
+        Based in Halifax and open 24/7, we cover the whole Halifax Regional Municipality and drive anywhere in Nova Scotia, New Brunswick and PEI. Every trip is priced the same way: $2 per km with a $48 minimum, plus the vehicle surcharge.
       </PageHero>
       <Section title="Local area pages">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -21,13 +21,11 @@ export function AreasHub() {
         </div>
       </Section>
       <Section title="Halifax Regional Municipality" className="bg-band">
-        <p className="max-w-3xl text-ink-2">Halifax Peninsula, Clayton Park, Spryfield, Cowie Hill, Timberlea, Dartmouth, Cole Harbour, Eastern Passage, Bedford, Hammonds Plains, Lower, Middle and Upper Sackville, Beaver Bank, Fall River and Waverley. <Link to="/services-rates/">See flat airport fares by area →</Link></p>
+        <p className="max-w-3xl text-ink-2">Halifax Peninsula, Clayton Park, Spryfield, Cowie Hill, Timberlea, Dartmouth, Cole Harbour, Eastern Passage, Bedford, Hammonds Plains, Lower, Middle and Upper Sackville, Beaver Bank, Fall River and Waverley. <Link to="/schedule/">Estimate your fare →</Link></p>
       </Section>
       <Section title="Long distance across Nova Scotia">
-        <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((p) => { const f = longDistanceNS.find((x) => x.place.startsWith(p)); return f && <li key={p} className="card flex justify-between py-3"><span>{f.place}</span><span className="font-semibold">{money(f.fare)}</span></li>; })}
-        </ul>
-        <p className="mt-4 text-[15px]"><Link to="/schedule/#long-distance">All 99 Nova Scotia destinations plus New Brunswick &amp; PEI →</Link></p>
+        <ul className="flex flex-wrap gap-2">{featured.map((p) => <li key={p} className="chip text-[13px]">{p}</li>)}</ul>
+        <p className="mt-4 text-[15px] text-ink-2">Long distance trips use the same per-km formula. <Link to="/schedule/#long-distance">Estimate a long distance fare →</Link></p>
       </Section>
       <CtaBand />
     </>
@@ -41,15 +39,10 @@ export function AreaPage({ path }) {
       <PageHero path={path} eyebrow={`${a.name}, Nova Scotia`} title={a.h1} img={a.img} imgAlt={`48Taxi & Limo serving ${a.name}`}>
         {a.intro}
       </PageHero>
-      <Section title={`${a.name} airport fares`} intro="Flat fares, sedan / SUV. Cash, credit and debit accepted.">
-        <div className="overflow-x-auto rounded-xl border border-line">
-          <table className="table min-w-[520px]">
-            <thead><tr><th>Area</th><th className="text-right">To YHZ</th><th className="text-right">From YHZ</th></tr></thead>
-            <tbody>{a.fares.map((r) => <tr key={r.area}><td className="font-medium">{r.area}</td><td className="text-right tabular-nums">{r.to}</td><td className="text-right tabular-nums">{r.from}</td></tr>)}</tbody>
-          </table>
-        </div>
-        <p className="mt-3 text-sm text-ink-3">“Quoted” fares are confirmed when you book. Prices may vary with stops, waiting time, weather, peak hours and vehicle size; gratuity not included.</p>
-        <div className="mt-6 flex flex-wrap gap-3"><Link to="/book-now/?service=airport" className="btn-primary">Book a {a.name} ride</Link><Link to="/schedule/" className="btn-ghost">Fare estimator</Link></div>
+      <Section title={`${a.name} taxi fares`} intro="Priced by driving distance. Cash, credit and debit accepted.">
+        <FareFormula />
+        <div className="mt-6"><FareEstimator defaultFrom={`${a.name}, NS`} defaultTo="Halifax Stanfield International Airport" /></div>
+        <div className="mt-6 flex flex-wrap gap-3"><Link to="/book-now/?service=airport" className="btn-primary">Book a {a.name} ride</Link><Link to="/schedule/" className="btn-ghost">All prices</Link></div>
       </Section>
       <Section title={`Why ${a.name} riders choose 48Taxi`} className="bg-band">
         <div className="grid gap-8 lg:grid-cols-2">

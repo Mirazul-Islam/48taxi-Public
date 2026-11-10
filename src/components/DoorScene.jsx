@@ -262,7 +262,7 @@ function Final() {
     <div className="mx-auto max-w-3xl text-center">
       <p className="eyebrow justify-center">Your ride is ready</p>
       <h2 id="door-title" className="display mt-5 text-[3rem] text-white sm:text-7xl lg:text-[6rem]">Step in. <em>We’ll take it from here.</em></h2>
-      <p className="lede mx-auto mt-6 max-w-lg text-ink">Flat airport fares, flight tracking and a driver who knows Halifax. Book in a minute, any hour.</p>
+      <p className="lede mx-auto mt-6 max-w-lg text-ink">Upfront prices, flight tracking and a driver who knows Halifax. Book in a minute, any hour.</p>
       <div className="mt-9 flex flex-wrap justify-center gap-3">
         <BookButton>Book your ride</BookButton>
         <CallButton />
