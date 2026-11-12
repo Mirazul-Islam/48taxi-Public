@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { PageHero, Section, Pic, Checklist, Faq, CtaBand, Reviews, Icon } from '../components/ui.jsx';
-import { FareEstimator, FareFormula, VehicleTable, AddonTable, WaitingTable } from '../components/Pricing.jsx';
+import { FareEstimator, PricePromise, VehicleTable, AddonTable, WaitingTable } from '../components/Pricing.jsx';
 import { YHZ } from '../lib/maps.js';
 import { fareNotes, hourly, groupDiscount } from '../data/fares.js';
 import { getaways, vehicles } from '../data/content.js';
@@ -35,8 +35,8 @@ export function AirportTaxi() {
       <PageHero path={path} eyebrow="Halifax Stanfield International Airport (YHZ)" title="Halifax airport taxi to and from YHZ" img="airport-traveller" imgAlt="Traveller with a suitcase walking to a waiting car at Halifax Stanfield airport">
         Pre-booked airport taxis between Halifax Stanfield and Halifax, Dartmouth, Bedford, Sackville and the rest of Nova Scotia. We track your flight, wait if you’re delayed, and can meet you inside arrivals with a name sign.
       </PageHero>
-      <Section title="Halifax airport taxi fares" intro={`Every airport fare is worked out from the driving distance, and you see the full price before you book. ${fareNotes.payment}`}>
-        <FareFormula />
+      <Section title="Halifax airport taxi fares" intro={`See the full price before you book. ${fareNotes.payment}`}>
+        <PricePromise />
         <div className="mt-6"><FareEstimator defaultTo={YHZ} fromPlaceholder="Your address, hotel or cruise terminal" /></div>
         <p className="mt-4 text-sm text-ink-3">{fareNotes.general}</p>
         <div className="mt-6 flex flex-wrap gap-3"><Link to="/book-now/?service=airport" className="btn-primary">Book an airport taxi</Link><Link to="/schedule/" className="btn-ghost">Estimate my fare</Link></div>
@@ -44,7 +44,7 @@ export function AirportTaxi() {
       <Section title="Why travellers book 48Taxi for YHZ" className="bg-band">
         <div className="grid gap-8 lg:grid-cols-2">
           <Checklist className="text-[17px]" items={[
-            'Your price is shown before you book: $2 per km, $48 minimum, no surge',
+            'Your exact price is shown before you book: no meter, no surge',
             'Flight tracking, and 30 minutes of free waiting after your flight lands',
             'Meet & greet with a name sign inside arrivals, on request',
             'Infant seats, highback and backless boosters available',
@@ -81,7 +81,7 @@ export function AirportShuttle() {
       <Section title="Three ways to get to YHZ">
         <div className="grid gap-5 md:grid-cols-3">
           {[
-            ['Private airport taxi', 'Priced by distance at $2 per km with a $48 minimum. Your car, your schedule.', '/halifax-airport-taxi/', 'Airport taxi fares'],
+            ['Private airport taxi', 'Your exact price before you book. Your car, your schedule.', '/halifax-airport-taxi/', 'Airport taxi fares'],
             ['Return trips', 'Book both ways at once: we reverse your addresses and track your return flight too.', '/book-now/?service=airport', 'Book a return trip'],
             ['Group & family rides', 'Suburbans and minivans for 6–7 passengers with luggage. Up to 20% off outside HRM for groups.', '/book-now/?service=airport', 'Book a group ride'],
           ].map(([t, d, to, l]) => (
@@ -124,11 +124,11 @@ export function ServicesRates() {
   return (
     <>
       <PageHero path={path} eyebrow="Services & rates" title="Halifax taxi and airport rates">
-        Your trusted taxi partner in Halifax &amp; Dartmouth. Every fare is calculated the same way, from the driving distance and the vehicle you choose, with cash and all credit and debit cards accepted.
+        Your trusted taxi partner in Halifax &amp; Dartmouth. You see your exact fare before you book, with cash and all credit and debit cards accepted.
       </PageHero>
-      <Section title="How fares are calculated">
-        <FareFormula />
-        <h3 className="mt-12 text-xl font-semibold">Vehicle surcharges and example fares</h3>
+      <Section title="Our prices">
+        <PricePromise />
+        <h3 className="mt-12 text-xl font-semibold">Our vehicles and example fares</h3>
         <div className="mt-4"><VehicleTable /></div>
         <p className="mt-5 text-[15px] text-ink-2">{fareNotes.general}</p>
       </Section>
@@ -176,14 +176,14 @@ export function Prices() {
   return (
     <>
       <PageHero path={path} eyebrow="Prices" title="Halifax taxi, limo and airport prices">
-        How much is a taxi or limo in Halifax? Every trip is priced the same way: $2 per km with a $48 minimum, plus a surcharge for the vehicle you choose. Enter your trip below to see your fare, or browse the full price list.
+        How much is a taxi or limo in Halifax? Enter your trip below to see your exact fare before you book, or browse example fares, extras and hourly rates.
       </PageHero>
-      <Section title="Fare estimator" intro="Your fare is worked out from the driving distance. Enter both addresses, or type the distance in km.">
+      <Section title="Fare estimator" intro="Enter both addresses to see your exact fare, extras included.">
         <FareEstimator />
       </Section>
-      <Section title="How every fare is calculated" className="bg-band">
-        <FareFormula />
-        <h3 className="mt-12 text-xl font-semibold">Vehicle surcharges and example fares</h3>
+      <Section title="Our prices" className="bg-band">
+        <PricePromise />
+        <h3 className="mt-12 text-xl font-semibold">Our vehicles and example fares</h3>
         <div className="mt-4"><VehicleTable /></div>
         <p className="mt-5 text-[15px] text-ink-2">{fareNotes.general}</p>
       </Section>

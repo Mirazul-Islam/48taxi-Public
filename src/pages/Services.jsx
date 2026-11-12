@@ -13,7 +13,7 @@ export function Limo() {
       <PageHero path={path} eyebrow="Chauffeured limousine service" title="Halifax limo service" img="chauffeur-door" imgAlt="Chauffeur opening the rear door of a black car">
         Luxury, reliability and professionalism. Book a chauffeured Cadillac Escalade, Chevy Suburban or Lincoln for airport transfers, weddings, proms, corporate travel or an hourly charter anywhere in Nova Scotia.
       </PageHero>
-      <Section title="Limo rates" intro="Point-to-point limo rides use our standard fare: $2 per km, $48 minimum, plus the vehicle surcharge (Lincoln +$15, Chevy Suburban +$25, Cadillac Escalade +$40). Hourly charters:">
+      <Section title="Limo rates" intro="Point-to-point limo rides are priced by distance and vehicle, and you see the exact fare before you book. Hourly charters:">
         <div className="grid gap-5 md:grid-cols-3">
           {hourly.map(([k, v]) => <div key={k} className="card"><p className="text-sm text-ink-3">{k}</p><p className="mt-1 text-3xl font-extrabold">{v}</p></div>)}
         </div>

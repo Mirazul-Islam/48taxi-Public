@@ -3,9 +3,9 @@
 
 export const fareNotes = {
   general:
-    'Fare = the higher of $48 or $2 per km, plus the vehicle surcharge. Extra stops are $5 each. Additional services and waiting time beyond the free period are added to the fare. Gratuity is not included. A minimum gratuity surcharge of 15% applies to all prepaid & billed reservations.',
+    'Your fare is based on the driving distance and the vehicle you choose, and you see it before you book. Extra stops, additional services and waiting time beyond the free period are added to the fare. Gratuity is not included. A minimum gratuity surcharge of 15% applies to all prepaid & billed reservations.',
   longDistance:
-    'Long distance trips use the same formula: $2 per km ($2.50 per km for the Chevy Suburban and Cadillac Escalade over 100 km), plus the vehicle surcharge. Tolls are extra. 48Taxi & Limo can go up to 20% off the regular price for groups.',
+    'Long distance trips are priced the same way, from the driving distance and your vehicle, and shown before you book. Tolls are extra. 48Taxi & Limo can go up to 20% off the regular price for groups.',
   payment: 'Cash, Visa, Mastercard, American Express and debit accepted.',
 };
 
