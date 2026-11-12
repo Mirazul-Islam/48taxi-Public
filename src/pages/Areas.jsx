@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { PageHero, Section, Checklist, Faq, CtaBand, Reviews, Pic } from '../components/ui.jsx';
 import { areaPages } from '../data/areas.js';
 import { faqsFor } from '../lib/seo.js';
-import { FareEstimator, FareFormula } from '../components/Pricing.jsx';
+import { FareEstimator, PricePromise } from '../components/Pricing.jsx';
 import { YHZ } from '../lib/maps.js';
 import { business } from '../data/site.js';
 
@@ -12,7 +12,7 @@ export function AreasHub() {
   return (
     <>
       <PageHero path={path} eyebrow="Where we drive" title="Taxi service areas across Nova Scotia" img="nova-scotia-service-map" imgAlt="Map of Nova Scotia showing Halifax, Truro, Wolfville, New Glasgow, Antigonish, Bridgewater and Sydney">
-        Based in Halifax and open 24/7, we cover the whole Halifax Regional Municipality and drive anywhere in Nova Scotia, New Brunswick and PEI. Every trip is priced the same way: $2 per km with a $48 minimum, plus the vehicle surcharge.
+        Based in Halifax and open 24/7, we cover the whole Halifax Regional Municipality and drive anywhere in Nova Scotia, New Brunswick and PEI. You see your exact fare before you book.
       </PageHero>
       <Section title="Local area pages">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -26,7 +26,7 @@ export function AreasHub() {
       </Section>
       <Section title="Long distance across Nova Scotia">
         <ul className="flex flex-wrap gap-2">{featured.map((p) => <li key={p} className="chip text-[13px]">{p}</li>)}</ul>
-        <p className="mt-4 text-[15px] text-ink-2">Long distance trips use the same per-km formula. <Link to="/schedule/#long-distance">Estimate a long distance fare →</Link></p>
+        <p className="mt-4 text-[15px] text-ink-2">See the price for any destination before you book. <Link to="/schedule/#long-distance">Estimate a long distance fare →</Link></p>
       </Section>
       <CtaBand />
     </>
@@ -40,8 +40,8 @@ export function AreaPage({ path }) {
       <PageHero path={path} eyebrow={`${a.name}, Nova Scotia`} title={a.h1} img={a.img} imgAlt={`48Taxi & Limo serving ${a.name}`}>
         {a.intro}
       </PageHero>
-      <Section title={`${a.name} taxi fares`} intro="Priced by driving distance. Cash, credit and debit accepted.">
-        <FareFormula />
+      <Section title={`${a.name} taxi fares`} intro="Your exact fare before you book. Cash, credit and debit accepted.">
+        <PricePromise />
         <div className="mt-6"><FareEstimator defaultTo={YHZ} fromPlaceholder={`Your address in ${a.name}`} /></div>
         <div className="mt-6 flex flex-wrap gap-3"><Link to="/book-now/?service=airport" className="btn-primary">Book a {a.name} ride</Link><Link to="/schedule/" className="btn-ghost">All prices</Link></div>
       </Section>

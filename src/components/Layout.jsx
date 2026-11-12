@@ -13,7 +13,7 @@ const nav = [
       { to: '/halifax-limo-service/', label: 'Limo service', note: 'Escalade, Suburban, Lincoln' },
       { to: '/airport-shuttle-halifax/', label: 'Airport shuttle', note: 'Door to door, groups welcome' },
       { to: '/corporate-hotel-transportation/', label: 'Corporate & hotels', note: 'Billed accounts' },
-      { to: '/services-rates/', label: 'Rates & extras', note: '$2/km, $48 minimum' },
+      { to: '/services-rates/', label: 'Rates & extras', note: 'Vehicles, extras, waiting time' },
       { to: '/service-areas/', label: 'Service areas', note: 'All of Nova Scotia' },
     ],
   },

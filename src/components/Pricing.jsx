@@ -1,30 +1,31 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PRICING, VEHICLES, DEFAULT_VEHICLE, ADDON_LIST, WAITING_LIST, EXAMPLE_TRIPS, tripFare, quote } from '../lib/pricing.js';
+import { VEHICLES, DEFAULT_VEHICLE, ADDON_LIST, WAITING_LIST, EXAMPLE_TRIPS, tripFare, quote } from '../lib/pricing.js';
 import { requestRoute } from '../lib/estimate.js';
 import { mapsFailed, isYhzText } from '../lib/maps.js';
 import AddressInput, { isPicked, addrText } from './AddressInput.jsx';
 import { money } from '../data/fares.js';
 
-/* The fare formula, front and centre. */
-export function FareFormula({ className = '' }) {
+/* Short promise shown above the calculator (no formula: customers just see their price). */
+export function PricePromise({ className = '' }) {
   return (
     <div className={`rounded-2xl border border-brand-700/40 bg-gradient-to-b from-brand-700/10 to-card p-6 sm:p-8 ${className}`}>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sand">How every fare is calculated</p>
-      <p className="display mt-3 text-3xl text-white sm:text-[2.6rem]">The higher of <em>${PRICING.minimumFare}</em> or <em>${PRICING.perKm} × km</em>, plus the vehicle surcharge.</p>
-      <p className="mt-4 text-[15px] text-ink-2">${PRICING.minimumFare} minimum on every trip, whatever the distance. Extra stops are ${PRICING.perStop} each. Over {PRICING.longDistanceKm} km, the Chevy Suburban and Cadillac Escalade are $2.50/km to cover fuel; every other vehicle stays at ${PRICING.perKm}/km.</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-sand">Upfront pricing</p>
+      <p className="display mt-3 text-3xl text-white sm:text-[2.6rem]">Your exact price, <em>before you book.</em></p>
+      <p className="mt-4 text-[15px] text-ink-2">Enter your pickup and drop-off and you’ll see the full fare for the vehicle you choose, extras included. No meter, no surge.</p>
     </div>
   );
 }
 
-/* Vehicle surcharges with worked examples (matches the pricing guide). */
+/* The fleet with one real-world example price per vehicle. */
+const EXAMPLE = EXAMPLE_TRIPS[1]; // Halifax Stanfield (YHZ) ↔ downtown Halifax
 export function VehicleTable() {
   return (
     <div className="overflow-x-auto rounded-xl border border-line">
-      <table className="table min-w-[720px]">
-        <caption className="sr-only">Vehicle surcharges and example fares</caption>
+      <table className="table min-w-[560px]">
+        <caption className="sr-only">Vehicles and an example fare</caption>
         <thead>
-          <tr><th>Class</th><th>Vehicle</th><th>Passengers</th><th className="text-right">Surcharge</th>{EXAMPLE_TRIPS.map((t) => <th key={t.km} className="text-right">{t.km} km trip</th>)}</tr>
+          <tr><th>Class</th><th>Vehicle</th><th>Passengers</th><th className="text-right">YHZ ↔ downtown Halifax</th></tr>
         </thead>
         <tbody>
           {VEHICLES.map((v) => (
@@ -32,13 +33,12 @@ export function VehicleTable() {
               <td className="text-ink-2">{v.cls}</td>
               <td className="font-medium text-white">{v.model}</td>
               <td>Up to {v.pax}</td>
-              <td className="text-right tabular-nums">{v.surcharge ? `+${money(v.surcharge)}` : '$0'}</td>
-              {EXAMPLE_TRIPS.map((t) => <td key={t.km} className="text-right tabular-nums">{money(tripFare(t.km, v.model))}</td>)}
+              <td className="text-right tabular-nums">{money(tripFare(EXAMPLE.km, v.model))}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="border-t border-line px-4 py-3 text-sm text-ink-3">Passenger counts are typical seating. Vehicle selection depends on availability. {EXAMPLE_TRIPS[1].km} km is about Halifax Stanfield (YHZ) to downtown Halifax.</p>
+      <p className="border-t border-line px-4 py-3 text-sm text-ink-3">Example one-way fares. Passenger counts are typical seating; vehicle selection depends on availability. Use the fare calculator for your exact trip.</p>
     </div>
   );
 }
@@ -71,12 +71,21 @@ export function WaitingTable() {
   );
 }
 
-/* Line-by-line price breakdown for a quote() result. */
-export function QuoteBreakdown({ q, minutes, note }) {
+/** Customer-facing lines: the ride as one price (no per-km maths), then stops and extras. */
+export function displayLines(q, vehicle, roundTrip) {
+  const ride = q.lines.filter((l) => l.kind === 'distance' || l.kind === 'vehicle').reduce((t, l) => t + l.amount, 0);
+  const rest = q.lines.filter((l) => l.kind !== 'distance' && l.kind !== 'vehicle');
+  if (!ride) return rest;
+  const label = `${q.exact ? 'Your ride' : 'Ride, from'}${vehicle ? ` · ${vehicle}` : ''}${roundTrip ? ' · round trip' : ''}`;
+  return [{ label, amount: Math.round(ride * 100) / 100 }, ...rest];
+}
+
+/* Price breakdown for a quote() result. */
+export function QuoteBreakdown({ q, minutes, note, vehicle, roundTrip }) {
   return (
     <div aria-live="polite">
       <dl className="divide-y divide-white/[0.07] text-[15px]">
-        {q.lines.map((l) => (
+        {displayLines(q, vehicle, roundTrip).map((l) => (
           <div key={l.label} className="flex justify-between gap-4 py-2"><dt className="text-ink-2">{l.label}</dt><dd className="tabular-nums text-white">{money(l.amount)}</dd></div>
         ))}
       </dl>
@@ -85,7 +94,7 @@ export function QuoteBreakdown({ q, minutes, note }) {
         <p className="display text-4xl text-white">{money(q.total)} <span className="font-sans text-sm text-ink-3">CAD</span></p>
       </div>
       <p className="mt-2 text-sm text-ink-3">
-        {q.exact ? `Based on a ${q.km} km route${minutes ? ` (about ${minutes} min)` : ''}.` : 'Enter the trip distance, or both addresses, to see your exact fare.'}
+        {q.exact ? `For your ${q.km} km route${minutes ? ` (about ${minutes} min drive)` : ''}.` : 'Enter both addresses to see your exact fare.'}
         {note ? ` ${note}` : ''}
       </p>
     </div>
@@ -141,7 +150,7 @@ export function VehicleSelect({ value, onChange, className = 'field', name, id }
     <select id={id} name={name} className={className} value={value} onChange={onChange}>
       {classes.map((c) => (
         <optgroup key={c} label={c}>
-          {VEHICLES.filter((v) => v.cls === c).map((v) => <option key={v.model} value={v.model}>{v.model} · up to {v.pax}{v.surcharge ? ` · +$${v.surcharge}` : ''}</option>)}
+          {VEHICLES.filter((v) => v.cls === c).map((v) => <option key={v.model} value={v.model}>{v.model} · up to {v.pax}</option>)}
         </optgroup>
       ))}
     </select>
@@ -176,7 +185,7 @@ export function FareEstimator({ defaultFrom = null, defaultTo = null, fromPlaceh
         <label className="block"><span className="label">Extra stops</span><select className="field" value={stops} onChange={(e) => setStops(+e.target.value)}>{[0, 1, 2, 3, 4].map((n) => <option key={n} value={n}>{n}</option>)}</select></label>
       </div>
       <div className="rounded-xl bg-black/25 p-5">
-        <QuoteBreakdown q={q} minutes={route.status === 'ok' ? route.minutes : null} />
+        <QuoteBreakdown q={q} vehicle={vehicle} roundTrip={round} minutes={route.status === 'ok' ? route.minutes : null} />
         <div className="mt-5 flex flex-wrap gap-3">
           <Link to={bookingLink({ pickup: from, dropoff: to, vehicle, roundTrip: round })} className="btn-primary">Book this ride</Link>
         </div>

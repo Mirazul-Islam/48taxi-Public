@@ -6,7 +6,7 @@ import { YHZ, isYhzText } from '../lib/maps.js';
 import { tours, airlines, luggageTypes } from '../data/content.js';
 import { business } from '../data/site.js';
 import { VEHICLES, DEFAULT_VEHICLE, ADDONS, PRICING, WAITING_TERMS, quote } from '../lib/pricing.js';
-import { QuoteBreakdown, useRoute } from './Pricing.jsx';
+import { QuoteBreakdown, useRoute, displayLines } from './Pricing.jsx';
 import { money } from '../data/fares.js';
 import { Cutout, ItemCounter } from './Visuals.jsx';
 
@@ -92,7 +92,7 @@ export default function BookingForm() {
     extrasOnly: !byDistance,
     extras: { meetGreet: isAirport && v.meetGreet, seats, wakeUpCall: v.wakeUpCall, assistBags: v.assistBags, pets: count(PET_KEYS), oversize: count(OVERSIZE_KEYS) },
   });
-  const estimateText = `${q.exact ? 'Estimated total' : 'From'} ${money(q.total)} CAD${q.km ? ` (${q.km} km)` : ''}: ${q.lines.map((l) => `${l.label} ${money(l.amount)}`).join('; ')}`;
+  const estimateText = `${q.exact ? 'Estimated total' : 'From'} ${money(q.total)} CAD${q.km ? ` (${q.km} km)` : ''}: ${displayLines(q, v.vehicle, roundTrip).map((l) => `${l.label} ${money(l.amount)}`).join('; ')}`;
 
   const submit = (e) =>
     f.onSubmit(e, {
@@ -219,7 +219,7 @@ export default function BookingForm() {
                         </span>
                         <span className="block px-3 pb-3 pt-1">
                           <span className={`block leading-tight ${on ? 'font-semibold text-white' : 'text-ink'}`}>{x.model}</span>
-                          <span className="mt-1 block text-xs text-ink-3">{x.year ? `${x.year} · ` : ''}Up to {x.pax} · <span className={x.surcharge ? 'text-brand-700' : ''}>{x.surcharge ? `+${money(x.surcharge)}` : 'no surcharge'}</span></span>
+                          <span className="mt-1 block text-xs text-ink-3">{x.year ? `${x.year} · ` : ''}Up to {x.pax} passengers</span>
                         </span>
                         {on && <span aria-hidden="true" className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-700 text-[11px] font-bold text-onaccent">✓</span>}
                       </label>
@@ -256,13 +256,15 @@ export default function BookingForm() {
       <div className="rounded-xl border border-line bg-band p-5 sm:p-6">
         <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
           <p className="text-lg font-semibold">Your price</p>
-          <p className="text-sm text-ink-3">{byDistance ? `$${PRICING.perKm}/km, $${PRICING.minimumFare} minimum, plus vehicle surcharge` : 'Extras you’ve picked'}</p>
+          <p className="text-sm text-ink-3">{byDistance ? 'Your ride and any extras' : 'Extras you’ve picked'}</p>
         </div>
         {byDistance && route.status === 'loading' && <p className="mb-2 text-sm text-ink-3">Measuring your route…</p>}
         {byDistance && route.status === 'idle' && <p className="mb-2 text-sm text-ink-3">Choose your addresses from the suggestions and your exact fare appears here.</p>}
         {q.lines.length ? (
           <QuoteBreakdown
             q={q}
+            vehicle={byDistance ? v.vehicle : undefined}
+            roundTrip={roundTrip}
             minutes={route.status === 'ok' ? route.minutes : null}
             note={!byDistance ? `${v.serviceType === 'hourly' ? 'Hourly' : 'Tour'} prices are confirmed by our team; these extras are added.` : route.status === 'unavailable' ? 'We couldn’t measure this route automatically, so we’ll confirm the exact fare with you.' : roundTrip && diffReturn ? 'The return leg is priced as the same distance; we’ll adjust if your return addresses differ.' : undefined}
           />
